@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="test">
+    <listeners>
+        <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+        <listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
+        <listener class-name="CollectionOfFunctionalMethods.BasicMethods.AssertionListener" />
+        <listener class-name="CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer"/>
+    </listeners>
+    <test name="Grahql管理端接口查询">
+        <parameter name="TestFilePath" value="/TestList/Graphql_jskq_study.xlsx"/>
+        <parameter name="PlatformName" value="四川考前"/>
+        <parameter name="TIME" value="2"/>
+        <parameter name="TestName" value="Graphql_jskq_study.xlsx"/>
+        <classes>
+            <class name="Testing.InterfaceTest"/>
+        </classes>
+    </test>
+
+
+</suite>
+
