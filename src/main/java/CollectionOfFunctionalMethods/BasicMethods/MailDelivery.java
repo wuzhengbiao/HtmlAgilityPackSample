@@ -99,7 +99,7 @@ public class MailDelivery {
             message.setContent("TC现网核心用例失败,请点击后面的url查看失败结果  "+"\n\n"+"<a href='http://macaca.fjchjlan.59iedu.com:1457/History/TheReport/surefire-reports/html/index.html'>http://macaca.fjchjlan.59iedu.com:1457/History/TheReport/surefire-reports/html/index.html</a>","text/html;charset=UTF-8");
 			}
 
-message.setSentDate(new Date());
+        message.setSentDate(new Date());
         //保存设置
         message.saveChanges();
         return message;

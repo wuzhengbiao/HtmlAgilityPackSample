@@ -3,6 +3,7 @@ package CollectionOfFunctionalMethods.GraphqlContext;
 import CollectionOfFunctionalMethods.BasicMethods.StringSubByContent;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,10 @@ public class GetReturnContent {
         for(int num=1;num<strKeyValueSub.length;num+=3)
         {
             NeedContext=StringSubByContent.SubByContentLBorRB(ReturnInterface,strKeyValueSub[num+1].trim(),strKeyValueSub[num+2].trim(),1);
+            if(strKeyValueSub[num].contains( "encodeurl" ))
+              {
+                  NeedContext= URLEncoder.encode(NeedContext,"utf-8");
+               }
             map.put( strKeyValueSub[num], ""+NeedContext+"");
         }
         return  map;
@@ -61,7 +66,7 @@ public class GetReturnContent {
             ReturnContent=NeedReplaceContext.replace( key,ReplaceMap.get( key ) ).trim();
             NeedReplaceContext=ReturnContent;
             System.out.print( "替换内容地址是： "+ ReturnContent+"\n");
-            System.out.print( "当前替换的key值="+ key+"    替换的value值= "+ReplaceMap.get( key )+"\n");
+      //      System.out.print( "当前替换的key值="+ key+"    替换的value值= "+ReplaceMap.get( key )+"\n");
         }
         return ReturnContent;
     }

@@ -2,6 +2,8 @@ package Com;
 
 //import com.sun.org.apache.xerces.internal.xs.XSFacet;
 //import junit.framework.TestCase;
+import CollectionOfFunctionalMethods.BasicMethods.GetLocalConfig;
+import CollectionOfFunctionalMethods.BasicMethods.GetRandom;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -57,7 +59,113 @@ public class ReadExcel {
         }
         return null;
     }
+    /**
+     * Read the Excel 2021
+     *@auth wuzb
+     * @param path the path of the excel file
+     * @return
+     * @throws IOException
+     */
+    public List<TestingCase> readXlsxDataPrepare(String path) throws IOException {
+        InputStream is = new FileInputStream(path);
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
+        TestingCase testingCase = null;
+        List<TestingCase> copylist = new ArrayList<TestingCase>();
+        String[] PrepareContext = null;
+        GetLocalConfig Config=new GetLocalConfig();
+        String Prepareconfig = Config.ReadConfigFile("PlatformBasicInformation.txt");
+        PrepareContext = Config.GetBySemicolonFromConfigFile(Prepareconfig);
+        // Read the Sheet
+        for (int numSheet = 0; numSheet < xssfWorkbook.getNumberOfSheets(); numSheet++) {
+            XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(numSheet);
+            if (xssfSheet == null) {
+                continue;
+            }
+            for(int prepareNum=0;prepareNum<PrepareContext.length;prepareNum++)
+            {
+                for (int rowNum = 1; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
+                    XSSFRow xssfRow = xssfSheet.getRow(rowNum);
+                    String FirstValue = getValue(xssfRow.getCell(0));
+                    if (FirstValue.equals("#")) {
+                        System.out.println(FirstValue + "序号：" + rowNum + "我被注释了！\n");
+                    } else {
+                        if (xssfRow != null) {
+                            testingCase = new TestingCase();
+                            XSSFCell no = xssfRow.getCell(0);
+                            XSSFCell description = xssfRow.getCell(1);
+                            XSSFCell model = xssfRow.getCell(2);
+                            XSSFCell mode = xssfRow.getCell(3);
+                            XSSFCell modepath = xssfRow.getCell(4);
+                            XSSFCell text = xssfRow.getCell(5);
+                            XSSFCell AppAuthentication = xssfRow.getCell(6);
+                            XSSFCell Authorization = xssfRow.getCell(7);
+                            XSSFCell ContextInterfaceReturn = xssfRow.getCell(8);
+                            XSSFCell CommonVariable = xssfRow.getCell(9);
+                            XSSFCell whereskip = xssfRow.getCell(10);
+                            String ReturnForm = ProcessingExcelDataTypes(text, getValue(text));//调用数据处理方法
+                            testingCase.setId(getValue(no));
+                            testingCase.setDescription(getValue(description)+String.valueOf(prepareNum+1));
+                            testingCase.setModel(getValue(model));
+                            testingCase.setMode(getValue(mode));
+                            if (getValue(modepath).contains("Domain")) {
+                                testingCase.setModePath(getValue(modepath).replace("Domain", PrepareContext[prepareNum].trim()));
+                            } /*else if (getValue(modepath).contains("xxx")) {
+                                testingCase.setModePath(getValue(modepath).replace("xxx", PrepareContext[PrepareContext.length / 2 + prepareNum]));
+                            } */else {
+                                testingCase.setModePath(getValue(modepath));
+                            }
+                            if(getValue(text).contains("Random"))
+                            {
+                                testingCase.setText(ReturnForm.replace("Random", GetRandom.ReturnGetRandomChar(3)));
+                            }
+                            else if(getValue(text).contains("Domain"))
+                            {
+                                testingCase.setText(ReturnForm.replace("Domain",PrepareContext[prepareNum]));
+                            }
+                            else {
+                                testingCase.setText(ReturnForm);
+                            }
+                           // testingCase.setText(ReturnForm+ GetRandom.ReturnGetRandomChar(3));
+                            try {
+                                testingCase.setAppAuthentication(getValue(AppAuthentication));
+                            } catch (Exception e) {
+                                testingCase.setAppAuthentication("空");
+                            }
+                            try {
+                                testingCase.setAuthorization(getValue(Authorization));
+                            } catch (Exception e) {
+                                testingCase.setAuthorization("空");
+                            }
+                            try {
+                                testingCase.setContextInterfaceReturn(getValue(ContextInterfaceReturn));
+                            } catch (Exception e) {
+                                testingCase.setContextInterfaceReturn("空");
+                            }
+                            try {
+                                testingCase.setCommonVariable(getValue(CommonVariable));
+                            } catch (Exception e) {
+                                testingCase.setCommonVariable("空");
+                            }
+                            try {
+                                testingCase.setWhetherskip(getValue(whereskip));
+                            } catch (Exception e) {
+                                testingCase.setWhetherskip("否");
+                            }
+                            if (testingCase.getWhetherskip().equals("否"))//判断是否跳过执行步骤
+                            {
+                                copylist.add(testingCase);
+                                if (testingCase.getText().equals("单例重跑")) {
+                                    copylist.add(testingCase);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        return copylist;
+    }
     /**
      * Read the Excel 2010
      * @param path the path of the excel file
@@ -65,7 +173,6 @@ public class ReadExcel {
      * @throws IOException
      */
     public List<TestingCase> readXlsx(String path) throws IOException{
-        System.out.println(Common.PROCESSING + path);
         InputStream is = new FileInputStream(path);
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
         TestingCase testingCase = null;
@@ -102,22 +209,39 @@ public class ReadExcel {
                         testingCase.setDescription( getValue( description ) );
                         testingCase.setModel( getValue( model ) );
                         testingCase.setMode( getValue( mode ) );
-                        testingCase.setModePath( getValue( modepath ) );
+                        testingCase.setModePath(getValue(modepath));
                         testingCase.setText( ReturnForm );
                         try {
                             testingCase.setAppAuthentication( getValue( AppAuthentication ) );
-                            testingCase.setAuthorization( getValue( Authorization ) );
-                            testingCase.setContextInterfaceReturn( getValue( ContextInterfaceReturn ) );
-                            testingCase.setCommonVariable( getValue( CommonVariable ) );
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             testingCase.setAppAuthentication( "空" );
+                        }
+                        try {
+                            testingCase.setAuthorization(getValue(Authorization));
+                        }
+                        catch (Exception e) {
                             testingCase.setAuthorization( "空" );
+                        }
+                        try {
+                            testingCase.setContextInterfaceReturn(getValue(ContextInterfaceReturn));
+                        }
+                        catch (Exception e)
+                        {
                             testingCase.setContextInterfaceReturn( "空" );
+                        }
+                        try {
+                            testingCase.setCommonVariable(getValue(CommonVariable));
+                        }
+                        catch (Exception e)
+                        {
                             testingCase.setCommonVariable( "空" );
                         }
                         try {
                             testingCase.setWhetherskip( getValue( whereskip ) );
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e)
+                        {
                             testingCase.setWhetherskip( "否" );
                         }
                         if (testingCase.getWhetherskip().equals( "否" ))//判断是否跳过执行步骤

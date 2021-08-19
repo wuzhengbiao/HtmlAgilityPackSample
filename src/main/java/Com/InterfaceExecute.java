@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by wuzb on 2020/04/21.
  */
 public class InterfaceExecute {
- private String ContentType="application/json";
+    private String ContentType="application/json";
     public Map<String,String> InterceptingVariables= new HashMap<String,String>();
     public Map<String,String> TotalVariables= new HashMap<String,String>();
     public  Object result;
@@ -32,14 +32,21 @@ public class InterfaceExecute {
                 else  if (Testingcase.getContextInterfaceReturn().contains( "replace" ))
                 {
                     String getModePath=GetReturnContent.ReplaceContextBySub( Testingcase.getModePath(),TotalVariables );
-                    String getTextPost=GetReturnContent.ReplaceContextBySub( Testingcase.getText(),TotalVariables );
+                    String getTextPost="";
+                    if(!Testingcase.getText().equals("空"))
+                    {
+                        getTextPost=GetReturnContent.ReplaceContextBySub( Testingcase.getText(),TotalVariables );
+                    }
                     result=httpRequest.SendPostString(getModePath,getTextPost, Testingcase.getAppAuthentication(),ContentType,Testingcase.getAuthorization());
                 }
                 //截取请求返回值且替换请求参数值
-                else if(Testingcase.getContextInterfaceReturn().contains( "double" ))
+                else if(Testingcase.getContextInterfaceReturn().contains( "returnAndreplace" ))
                 {
                     String getModePath=GetReturnContent.ReplaceContextBySub( Testingcase.getModePath(),TotalVariables );
-                    String getTextPost=GetReturnContent.ReplaceContextBySub( Testingcase.getText(),TotalVariables );
+                    String getTextPost="";
+                    if(!Testingcase.getText().equals("空")) {
+                        getTextPost= GetReturnContent.ReplaceContextBySub(Testingcase.getText(), TotalVariables);
+                    }
                     result=httpRequest.SendPostString( getModePath,getTextPost, Testingcase.getAppAuthentication(),ContentType,Testingcase.getAuthorization());
                     InterceptingVariables= GetReturnContent.GetReturnContentBySub( result.toString(),"#",Testingcase.getContextInterfaceReturn() );
                     TotalVariables.putAll( InterceptingVariables );
@@ -63,6 +70,20 @@ public class InterfaceExecute {
                     InterceptingVariables= GetReturnContent.GetReturnContentBySub( result.toString(),"#",Testingcase.getContextInterfaceReturn() );
                     TotalVariables.putAll( InterceptingVariables );
                 }
+                //替换请求参数变量值
+                else  if (Testingcase.getContextInterfaceReturn().contains( "replace" ))
+                {
+                    String getModePath=GetReturnContent.ReplaceContextBySub( Testingcase.getModePath(),TotalVariables );
+                    result=httpRequest.SendGetNullBody(getModePath, Testingcase.getAppAuthentication(),ContentType,Testingcase.getAuthorization());
+                }
+                //截取请求返回值且替换请求参数值
+                else if(Testingcase.getContextInterfaceReturn().contains( "returnAndreplace" ))
+                {
+                    String getModePath=GetReturnContent.ReplaceContextBySub( Testingcase.getModePath(),TotalVariables );
+                    result=httpRequest.SendGetNullBody( getModePath, Testingcase.getAppAuthentication(),ContentType,Testingcase.getAuthorization());
+                    InterceptingVariables= GetReturnContent.GetReturnContentBySub( result.toString(),"#",Testingcase.getContextInterfaceReturn() );
+                    TotalVariables.putAll( InterceptingVariables );
+                }
                 else {
                     result=httpRequest.SendGetNullBody( Testingcase.getModePath(), Testingcase.getAppAuthentication(), ContentType,Testingcase.getAuthorization());
                 }
@@ -83,7 +104,7 @@ public class InterfaceExecute {
                     String getTextPost=GetReturnContent.ReplaceContextBySub( Testingcase.getText(),TotalVariables );
                     result=httpsRequest.SendPosts(getModePath,getTextPost, Testingcase.getAppAuthentication(),ContentType,Testingcase.getAuthorization());
                 }
-                else if(Testingcase.getContextInterfaceReturn().contains( "double" ))
+                else if(Testingcase.getContextInterfaceReturn().contains( "returnAndreplace" ))
                 {
                     String getModePath=GetReturnContent.ReplaceContextBySub( Testingcase.getModePath(),TotalVariables );
                     String getTextPost=GetReturnContent.ReplaceContextBySub( Testingcase.getText(),TotalVariables );
@@ -93,6 +114,30 @@ public class InterfaceExecute {
                 }
                 else {
                     result=httpsRequest.SendPosts( Testingcase.getModePath(),Testingcase.getText(), Testingcase.getAppAuthentication(),ContentType,Testingcase.getAuthorization());
+                }
+            }
+            else if(Testingcase.getMode().equalsIgnoreCase("get"))
+            {
+                if(Testingcase.getContextInterfaceReturn().contains( "return" ))
+                {
+                    result=httpsRequest.SendGetSNullBody( Testingcase.getModePath(),ContentType,Testingcase.getAppAuthentication(),Testingcase.getAuthorization());
+                    InterceptingVariables= GetReturnContent.GetReturnContentBySub( result.toString(),"#",Testingcase.getContextInterfaceReturn() );
+                    TotalVariables.putAll( InterceptingVariables );
+                }
+                else  if (Testingcase.getContextInterfaceReturn().contains( "replace" ))
+                {
+                    String getModePath=GetReturnContent.ReplaceContextBySub( Testingcase.getModePath(),TotalVariables );
+                    result=httpsRequest.SendGetSNullBody(getModePath,ContentType,Testingcase.getAppAuthentication(),Testingcase.getAuthorization());
+                }
+                else if(Testingcase.getContextInterfaceReturn().contains( "returnAndreplace" ))
+                {
+                    String getModePath=GetReturnContent.ReplaceContextBySub( Testingcase.getModePath(),TotalVariables );
+                    result=httpsRequest.SendGetSNullBody( getModePath, ContentType,Testingcase.getAppAuthentication(),Testingcase.getAuthorization());
+                    InterceptingVariables= GetReturnContent.GetReturnContentBySub( result.toString(),"#",Testingcase.getContextInterfaceReturn() );
+                    TotalVariables.putAll( InterceptingVariables );
+                }
+                else {
+                    result=httpsRequest.SendGetSNullBody( Testingcase.getModePath(),ContentType,Testingcase.getAppAuthentication(),Testingcase.getAuthorization());
                 }
             }
         }

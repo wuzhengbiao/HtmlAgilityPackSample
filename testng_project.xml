@@ -11,6 +11,7 @@
         <parameter name="TestFilePath" value="/TestList/5.0SYSMoveHW.xlsx"/>
         <parameter name="PlatformName" value="值班checklist用例-域名"/>
         <parameter name="TIME" value="5"/>
+        <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="5.0SYSMoveHW.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>

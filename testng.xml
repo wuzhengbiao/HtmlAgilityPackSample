@@ -1,17 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="test" parallel="false" thread-count="2">
+<suite name="test" parallel="true" thread-count="2">
     <listeners>
         <listener class-name="org.uncommons.reportng.HTMLReporter"/>
         <listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
         <listener class-name="CollectionOfFunctionalMethods.BasicMethods.AssertionListener" />
         <listener class-name="CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer"/>
     </listeners>
-
+    <test name="8.0福建职业健康学习">
+        <parameter name="TestFilePath" value="/TestList/8.0FJZYJKStudy.xlsx"/>
+        <parameter name="PlatformName" value="核心用例-8.0福建职业健康学习"/>
+        <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="8.0FJZYJKStudy.xlsx"/>
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>
     <test name="安徽专技学员学习">
         <parameter name="TestFilePath" value="/TestList/7.0AHZJSZstudy.xlsx"/>
         <parameter name="PlatformName" value="核心用例-7.0安徽专技学员学习"/>
         <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="7.0AHZJSZstudy.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
@@ -30,6 +40,7 @@
         <parameter name="TestFilePath" value="/TestList/7.0GSSZstudy.xlsx"/>
         <parameter name="PlatformName" value="核心用例-7.0甘肃专技学员学习"/>
         <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="7.0GSSZstudy.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
@@ -39,7 +50,19 @@
         <parameter name="TestFilePath" value="/TestList/fjkj200507.xlsx"/>
         <parameter name="PlatformName" value="核心用例-7.0福建会计学员学习"/>
         <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="fjkj200507.xlsx"/>
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>
+	
+	<test name="湖北会计学员学习">
+		<parameter name="TestFilePath" value="/TestList/7.01HBKJ-Study.xlsx"/>
+        <parameter name="PlatformName" value="核心用例-7.0湖北会计学员学习"/>
+        <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="7.01HBKJ-Study.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
         </classes>
@@ -49,6 +72,7 @@
     <parameter name="TestFilePath" value="/TestList/buyclass-student.xlsx"/>
     <parameter name="PlatformName" value="核心用例-测绘项目学员报名"/>
     <parameter name="TIME" value="2"/>
+    <parameter name="IfDataPrepare" value="否"/>
     <parameter name="TestName" value="buyclass-student.xlsx"/>
     <classes>
         <class name="Testing.Tester"/>
@@ -58,6 +82,7 @@
         <parameter name="TestFilePath" value="/TestList/buyclass-admin.xlsx"/>
         <parameter name="PlatformName" value="核心用例-测绘项目退款"/>
         <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="buyclass-admin.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
@@ -68,6 +93,7 @@
         <parameter name="TestFilePath" value="/TestList/GSZJ.xlsx"/>
         <parameter name="PlatformName" value="核心用例-福建建设华为云视频播放检测"/>
         <parameter name="TIME" value="5"/>
+        <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="GSZJ.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
@@ -78,6 +104,7 @@
         <parameter name="TestFilePath" value="/TestList/7.0FujianConstructionStudy.xlsx"/>
         <parameter name="PlatformName" value="核心用例-福建建设学习"/>
         <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="7.0FujianConstructionStudy.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
@@ -85,8 +112,9 @@
     </test>
     <test name="四川建设报名">
        <parameter name="TestFilePath" value="/TestList/6.0SJbuyclass.xlsx"/>
-        <parameter name="PlatformName" value="核心用例-四川建设报名"/>
+       <parameter name="PlatformName" value="核心用例-四川建设报名"/>
        <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
        <parameter name="TestName" value="6.0SJbuyclass.xlsx"/>
    <classes>
        <class name="Testing.Tester"/>
@@ -96,11 +124,54 @@
        <parameter name="TestFilePath" value="/TestList/6.0SCstudyexam.xlsx"/>
        <parameter name="PlatformName" value="核心用例-四川建设学习考试"/>
        <parameter name="TIME" value="2"/>
+       <parameter name="IfDataPrepare" value="否"/>
        <parameter name="TestName" value="6.0SCstudyexam.xlsx"/>
    <classes>
        <class name="Testing.Tester"/>
    </classes>
    </test>
+   <test name="建设考前新平台学习">
+       <parameter name="TestFilePath" value="/TestList/8.01XJSKQ-Study.xlsx"/>
+       <parameter name="PlatformName" value="核心用例-建设考前新平台学习"/>
+       <parameter name="TIME" value="4"/>
+       <parameter name="IfDataPrepare" value="否"/>
+       <parameter name="TestName" value="8.01XJSKQ-Study.xlsx"/>
+   <classes>
+       <class name="Testing.Tester"/>
+   </classes>
+   </test>
+   <test name="建设考前新平台考试">
+       <parameter name="TestFilePath" value="/TestList/8.01XJSKQ-Exam.xlsx"/>
+       <parameter name="PlatformName" value="核心用例-建设考前新平台考试"/>
+       <parameter name="TIME" value="4"/>
+       <parameter name="IfDataPrepare" value="否"/>
+       <parameter name="TestName" value="8.01XJSKQ-Exam.xlsx"/>
+   <classes>
+       <class name="Testing.Tester"/>
+   </classes>
+   </test>
+   
+   <!-- <test name="建设考前旧平台学习">
+       <parameter name="TestFilePath" value="/TestList/8.01JJSKQ-Study.xlsx"/>
+       <parameter name="PlatformName" value="核心用例-建设考前旧平台学习"/>
+       <parameter name="TIME" value="4"/>
+       <parameter name="IfDataPrepare" value="否"/>
+       <parameter name="TestName" value="8.01JJSKQ-Study.xlsx"/>
+   <classes>
+       <class name="Testing.Tester"/>
+   </classes>
+   </test>
+   <test name="建设考前旧平台考试">
+       <parameter name="TestFilePath" value="/TestList/8.01JJSKQ-Exam .xlsx"/>
+       <parameter name="PlatformName" value="核心用例-建设考前旧平台考试"/>
+       <parameter name="TIME" value="4"/>
+       <parameter name="IfDataPrepare" value="否"/>
+       <parameter name="TestName" value="8.01JJSKQ-Exam .xlsx"/>
+   <classes>
+       <class name="Testing.Tester"/>
+   </classes>
+   </test> -->
+   
    <!--<test name="6.0省工考学员学习">-->
     <!--<parameter name="TestFilePath" value="/TestList/SGKstudy.xlsx"/>-->
     <!--<parameter name="TIME" value="40"/>-->
@@ -138,6 +209,7 @@
         <parameter name="TestFilePath" value="/TestList/6.0sdstudy.xlsx"/>
       <parameter name="PlatformName" value="核心用例-6.0山东平台学员学习"/>
       <parameter name="TIME" value="2"/>
+      <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="6.0sdstudy.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
@@ -160,6 +232,7 @@
         <parameter name="TestFilePath" value="/TestList/5.0StudyExam.xlsx"/>
         <parameter name="PlatformName" value="核心用例-5.0学习考试"/>
         <parameter name="TIME" value="2"/>
+		<parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="5.0StudyExam.xlsx"/>
 
         <classes>

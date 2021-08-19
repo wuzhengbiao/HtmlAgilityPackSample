@@ -6,6 +6,7 @@ import CollectionOfFunctionalMethods.DatabaseRelatedMethods.DatabaseDataOperatio
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIReTry;
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.ReTryTimes;
 import Com.*;
+import DingDingTalk.DingTalkCall;
 import Init.InitDriver;
 import macaca.client.MacacaClient;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,7 @@ import org.testng.Reporter;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,24 +27,32 @@ public class Tester  {
     //设置一个延迟时长从testng.xml文件中读取的变量
     public String ProgramPath;
     @Test
-    @Parameters({"TestFilePath" ,"PlatformName", "TIME" , "TestName"})
-    public void tester(String TestFilePath,String PlatformName,int TIME,String TestName) throws Exception {
+    @Parameters({"TestFilePath" ,"PlatformName", "TIME" , "TestName","IfDataPrepare"})
+    public void tester(String TestFilePath,String PlatformName,int TIME,String TestName,String IfDataPrepare) throws Exception {
         InitDriver Init= new InitDriver();
         MacacaClient driver=Init.MacacaInit();//macaca初始化对象
         Execute Execute = new Execute();
         AbnormalScreenshot Abnormal = new AbnormalScreenshot();
         DataBase data=new DataBase();
+        List<TestingCase> list = new ArrayList<TestingCase>();
         DatabaseDataOperation Operation=new DatabaseDataOperation();
         int    QueryCount=0;//统计没有找到元素的次数
         int    ElementCount=1;//代替excle文本序列号
         int RerunTimes ;//重跑次数
-        MailDelivery.TestNgType=PlatformName;
+        MailDelivery.TestNgType=PlatformName;//用于邮件类型通知
+        DingTalkCall.MessageType=PlatformName;//用于钉钉类型通知
         Map<Integer,Integer> MapListCase = new HashMap<Integer, Integer>();//储存没找到元素的序号
         ProgramPath = URLDecoder.decode(Tester.class.getResource("").toString(),"UTF-8");
         ProgramPath = StringUtils.substringBefore(ProgramPath,"/target");
         ProgramPath = StringUtils.substringAfter(ProgramPath,"file:/");
         ReadExcel reade = new ReadExcel();
-        List<TestingCase> list =  reade.readXlsx(ProgramPath+TestFilePath);
+        if(IfDataPrepare.equals("是"))//判断是否是数据流程准备文件
+        {
+            list = reade.readXlsxDataPrepare( ProgramPath + TestFilePath );
+        }
+        else{
+            list = reade.readXlsx( ProgramPath + TestFilePath );//正常用例执行
+        }
         driver.maximize();
         if (list != null) {
             for (TestingCase testCase : list) {
@@ -66,7 +76,7 @@ public class Tester  {
                         MapListCase.put(0, -1);//设置初始值，不然下面相减会报错
                         QueryCount++;
                         MapListCase.put(QueryCount, ElementCount);//存储没有找到元素的列表信息
-                        if(MapListCase.get(QueryCount)-MapListCase.get(QueryCount-1)==1)//判断是不是连续操作2次都报错
+                       if(MapListCase.get(QueryCount)-MapListCase.get(QueryCount-1)==1)//判断是不是连续操作2次都报错
                         {
                             Reporter.log( "<p  style=\"font-weight: 900;color:red;font-size:15px\">" + "No." + testCase.getId() + "操作说明" + testCase.getDescription() + "\n操作时间: " + GetCurrentSystemTime.GetCurrentTime() + "</p>" );
                             driver.saveScreenshot( img );
@@ -80,19 +90,22 @@ public class Tester  {
                                 {
                                     ReTryTimes.maxReTryNum = ReTryTimes.maxReTryNum+1;
                                     System.out.print( " ReTryTimes.maxReTryNum  = "+  ReTryTimes.maxReTryNum+"\n");
+                                    DingTalkCall.DingTalkCallMessageDesign("现网Macaca用例执行报错告警通知："+"No." + testCase.getId() + " 操作说明：" + testCase.getDescription()+" 重跑了 "+ReTryTimes.maxReTryNum+" 次！！",1);
                                     break;
                                 }
                             }
-                                EventListenerMonitoring.Listenerflag = 2;
-                                Runtime.getRuntime().exec("taskkill /f /im chrome.exe");//调用dos命令杀死谷歌进程
-                                Assert.assertEquals(ResultNum, 1, "序号 No." + list.get(MapListCase.get(QueryCount-1)).getId() + ", 操作说明：" + list.get(MapListCase.get(QueryCount-1)).getDescription() + "   原因： 连续2个操作找不到元素，有可能是定位错了，或者是流程出现未知的情况！！");
+                            EventListenerMonitoring.Listenerflag = 2;
+                            Runtime.getRuntime().exec("taskkill /f /im chrome.exe");//调用dos命令杀死谷歌进程
+                            DingTalkCall.DingTalkCallMessageDesign("现网Macaca用例执行报错告警通知："+"No." + testCase.getId() + " 操作说明：" + testCase.getDescription()+"！！",1);
+                            Assert.assertEquals(ResultNum, 1, "序号 No." + list.get(MapListCase.get(QueryCount-1)).getId() + ", 操作说明：" + list.get(MapListCase.get(QueryCount-1)).getDescription() + "   原因： 连续2个操作找不到元素，有可能是定位错了，或者是流程出现未知的情况！！");
                         }
+                    //    DingTalkCall.DingTalkCallMessageDesign("现网Macaca用例执行报错告警通知："+"No." + testCase.getId() + " 操作说明：" + testCase.getDescription(),1);
                             Reporter.log( "<p  style=\"font-weight: 900;color:DarkOrange;font-size:15px\">"+"No." + testCase.getId() + "操作说明" + testCase.getDescription()+"\n操作时间: "+ GetCurrentSystemTime.GetCurrentTime()+"</p>");
                             EventListenerMonitoring.Listenerflag = 3;
                             MyAssertion.verifyEquals( ResultNum, 1, "No." + testCase.getId() + " 操作说明：" + testCase.getDescription() + "  没有找到元素！！" + "\n操作时间: " + GetCurrentSystemTime.GetCurrentTime() );//捕获assert断言
                             driver.saveScreenshot( img );
                     }
-                    //用于处理报表数据查询过大，加长等待时间
+                    //用于处理报表数据
                     else if (ResultNum == 3) {
                         Reporter.log( "No." + testCase.getId() + "操作说明" + testCase.getDescription()+"\n操作时间: "+ GetCurrentSystemTime.GetCurrentTime());
                         driver.saveScreenshot(img);
@@ -103,9 +116,16 @@ public class Tester  {
                     else if(ResultNum==5)
                     {
                         Reporter.log( "<p  style=\"font-weight: 900;color:DarkOrange;font-size:15px \">"+"No." + testCase.getId() + "操作说明" + testCase.getDescription()+"\n操作时间: "+ GetCurrentSystemTime.GetCurrentTime()+"</p>");
+                        driver.saveScreenshot(img);
                         String insertexception3=Operation.DataToInsertAbnormal(3,1,list.get(0).getModePath(),PlatformName,0, GetCurrentSystemTime.GetCurrentTime(),"连接超时异常！！");
                         data.InsertDatabaseSql(insertexception3);
                         continue;
+                    }
+                    else if (ResultNum==6)
+                    {
+                        Reporter.log( "No." + testCase.getId() + "操作说明" + testCase.getDescription()+"\n操作时间: "+ GetCurrentSystemTime.GetCurrentTime());
+                        driver.saveScreenshot(img);
+                        Reporter.log( "<p  style=\"color:blue\"> 返回值： " + Execute.Ymresult+"</p>");
                     }
                     else {
                         Reporter.log( "No." + testCase.getId() + "操作说明" + testCase.getDescription()+"\n操作时间: "+ GetCurrentSystemTime.GetCurrentTime());

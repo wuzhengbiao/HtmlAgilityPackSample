@@ -8,12 +8,13 @@
         <listener class-name="CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer"/>
     </listeners>
        
-	 <test name="5.0山东考试">
+	 <test name="快速准备数据">
         <!--以下是为@test方法中进行赋值-->
-        <parameter name="TestFilePath" value="/TestList/EME.xlsx"/>
-        <parameter name="PlatformName" value="5.0山东考试"/>
+        <parameter name="TestFilePath" value="/TestList/6.0sdstudy.xlsx"/>
+        <parameter name="PlatformName" value="专技快速准备数据"/>
         <parameter name="TIME" value="2"/>
-        <parameter name="TestName" value="EME.xlsx"/>
+         <parameter name="IfDataPrepare" value="否"/>
+         <parameter name="TestName" value="6.0sdstudy.xlsx"/>
 
         <classes>
             <class name="Testing.Tester"/>

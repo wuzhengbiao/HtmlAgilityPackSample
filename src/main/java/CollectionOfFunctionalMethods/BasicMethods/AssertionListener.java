@@ -8,12 +8,13 @@ import CollectionOfFunctionalMethods.ServerPortAndIdRelated.QueryMacacaSeverPort
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer;
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIReTry;
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.ReTryTimes;
+import DingDingTalk.DingTalkCall;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 /**
- * 重写testng监听器三种测试结果的测试方法
+ * 重写testng监听器5种测试结果的测试方法
  * @author wzb 2019/08/01
  */
 //TestListenerAdapter 已经实现 ITestListener，并且提供了一些有用的方法，比如分别获取所有成功失败跳过三种测试结果的测试方法的方法

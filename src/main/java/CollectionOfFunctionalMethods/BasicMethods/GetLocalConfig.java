@@ -8,7 +8,7 @@ public class GetLocalConfig {
     /**
      * 读取文件内容
      **/
-    public  String ReadConfigFile() throws UnsupportedEncodingException {
+    public  String ReadConfigFile(String filename) throws UnsupportedEncodingException {
         BufferedReader br = null;
         String line = null;
         String filePath = null;
@@ -16,7 +16,7 @@ public class GetLocalConfig {
         //List<String> list_file = new ArrayList<String>();
         StringBuffer buf = new StringBuffer();
         packagePath = this.getClass().getResource("").getPath();
-        packagePath = StringUtils.substringBefore(packagePath,"/target")+"/config.txt";
+        packagePath = StringUtils.substringBefore(packagePath,"/target")+"/"+filename;
         filePath =java.net.URLDecoder.decode(packagePath,"utf-8");
        // filePath = StringUtils.substringAfter(filePath,"file:/");
         //String filePath= System.getProperty("user.dir")+"\\config.txt";//获取用户的当前工作目录

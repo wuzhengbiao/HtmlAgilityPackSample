@@ -16,9 +16,10 @@ public class StringSubByContent {
         String context = "";
         if(skip==1)
         {
-            context=buffer.substring(0, buffer.indexOf(RB));
-            context=context.substring(buffer.indexOf(LB)+LB.length());
-            System.out.println("截取获得值:"+context+"\n");
+            context=buffer.substring(0,buffer.indexOf(LB));
+            context=buffer.substring(context.length()+LB.length(),buffer.length());
+            context=context.substring(0,context.indexOf(RB));
+            System.out.println("截取获得值RB:"+context+"\n");
         }
         else
         {

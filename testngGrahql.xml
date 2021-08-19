@@ -8,10 +8,11 @@
         <listener class-name="CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer"/>
     </listeners>
     <test name="Grahql管理端接口查询">
-        <parameter name="TestFilePath" value="/TestList/Graphql_jskq_study.xlsx"/>
+        <parameter name="TestFilePath" value="/TestList/Graphql_btpxlc.xlsx"/>
         <parameter name="PlatformName" value="四川考前"/>
         <parameter name="TIME" value="2"/>
-        <parameter name="TestName" value="Graphql_jskq_study.xlsx"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="Graphql_btpxlc.xlsx"/>
         <classes>
             <class name="Testing.InterfaceTest"/>
         </classes>

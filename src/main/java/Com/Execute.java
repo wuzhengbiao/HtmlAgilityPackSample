@@ -4,13 +4,24 @@ import CollectionOfFunctionalMethods.BasicMethods.EventListenerMonitoring;
 import CollectionOfFunctionalMethods.BasicMethods.GetRandom;
 import CollectionOfFunctionalMethods.BasicMethods.RobotAction;
 import CollectionOfFunctionalMethods.BasicMethods.StringSubByContent;
+import CollectionOfFunctionalMethods.DatabaseRelatedMethods.DataBase;
+import CollectionOfFunctionalMethods.GraphqlContext.GetReturnContent;
+import CollectionOfFunctionalMethods.HttpAndHttpsProtocol.HttpRequestMethod;
+import CollectionOfFunctionalMethods.HttpAndHttpsProtocol.HttpsRequest;
+import CollectionOfFunctionalMethods.HttpAndHttpsProtocol.PostGetGeneralMethod;
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIReTry;
 import macaca.client.MacacaClient;
+import macaca.client.commands.Element;
+import macaca.client.common.GetElementWay;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.testng.Assert;
 import org.testng.Reporter;
-
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,13 +33,20 @@ public class Execute {
 //  返回1：正常
 //  返回2：未进入合理判断的分支
 //  返回3: 特殊处理报表数据过大截图时间
-//  返回4:未知的异常
+//  返回4: 未知的异常
 //  返回5：超时
+//  返回6：接口返回值
+//  返回7：数据库执行成功
+//  返回8：接口数据返回
     private String Aftertime="";
     private String beforetime="0";
     private String GetClickText="";
     private String Intercept_content="";
     public String   Returnbody="";
+    public  Object Ymresult;
+    private DataBase DatabaseExecute=new DataBase();
+    private PostGetGeneralMethod PostGet=new PostGetGeneralMethod();
+    private String Cookie="";
     public int execute(MacacaClient Driver, TestingCase Testingcase, int T) throws Exception {
         if (Testingcase.getModel().equals("访问")){
             try {
@@ -58,7 +76,7 @@ public class Execute {
                 }
             }
         }
-              //  Driver.elementByXPath(Testingcase.getModePath()).clearText();
+                Driver.elementByXPath(Testingcase.getModePath()).clearText();
                 Driver.elementByXPath(Testingcase.getModePath()).sendKeys(Testingcase.getText());
                 return 1;
     }catch (Exception e) {
@@ -90,33 +108,6 @@ public class Execute {
             return 4;
         }
     }
-    else  if(Testingcase.getModel().equals("悬停"))
-    {
-        try {
-            RobotAction.MouseMovement(0, 566, 566);
-            if (Driver.waitForElementByXPath(Testingcase.getModePath()) == null) {
-                System.out.println("找了四遍没有找到，开始等待！\n");
-                for (int i = 1; i <= T; i++)//可以自定义等待区间时长
-                {
-                    Driver.sleep(1000);
-                    if (Driver.waitForElementByXPath(Testingcase.getModePath()) != null)//隔一秒查找元素
-                    {
-                        System.out.println("等待了：" + i + "秒,找到元素了");
-                        break;
-                    }
-                    if (i == T) {
-                        return 0;
-                    }
-                }
-            }
-
-            Driver.elementByXPath(Testingcase.getModePath()).click();
-            return 1;
-        }catch (Exception e) {
-            return 4;
-        }
-
-    }
     else if (Testingcase.getModel().equals("返回"))
     {
         String regEx="[^0-9]";
@@ -143,6 +134,53 @@ public class Execute {
         }
 
     }
+    else if (Testingcase.getModel().equals("iframe切换"))
+        {
+         try{
+            Driver.frame(Testingcase.getModePath());//切换到新iframe页面
+            return 1;
+        }catch (Exception e) {
+            return 4;
+        }
+        }
+    else if (Testingcase.getModel().equals("iframe切回"))
+        {
+            Driver.frame("");//切换回旧的页面
+            return 1;
+        }
+    else if (Testingcase.getModel().equals("上传"))
+        {
+            if (Driver.waitForElementByXPath(Testingcase.getModePath())==null)
+            {
+                System.out.println("找了四遍没有找到，开始等待！\n");
+                for (int i=1; i <= T; i++)//可以自定义等待区间时长
+                {
+                    Driver.sleep(1000);
+                    if(Driver.waitForElementByXPath(Testingcase.getModePath())!=null)//隔一秒查找元素
+                    {
+                        System.out.println("等待了："+i+"秒,找到元素了");
+                        break;
+                    }
+                    if (i == T) {
+                        return 0;
+                    }
+                }
+            }
+            Driver.elementByXPath(Testingcase.getModePath()).sendKeys(Testingcase.getText());
+        }
+    else if (Testingcase.getModel().equals("数据库"))
+        {
+            int reasultInt=DatabaseExecute.InsertDatabaseSql(Testingcase.getModePath());
+            System.out.print("Database Execute Return ：" + reasultInt+"\n");
+            if(reasultInt>0)
+            {
+                return 7;
+            }
+            else{
+                return 0;
+            }
+
+        }
     else if (Testingcase.getModel().equals("比较")) {
         System.out.print("beforetime= " + beforetime + "\n" + "Aftertime= " + Aftertime + "\n");
         if (!Aftertime.equals(beforetime)) {
@@ -168,7 +206,8 @@ public class Execute {
         beforetime=Aftertime;
         return 1;
     }
-    else if (Testingcase.getModel().equals("接口截取"))
+    //该方法适用于页面输入get的输入url，并获取其页面上的返回值替换
+    else if (Testingcase.getModel().equals("接口截取"))//用于之前周口专技验证，现在基本不用了，用下列的接口请求也可以做到
     {
         try{
             String[] Interface=null;
@@ -185,6 +224,84 @@ public class Execute {
             return 4;
         }
     }
+        else if (Testingcase.getModel().contains("列表"))//针对元素定位会返回多个元素情况，指定操作某个元素
+        {
+            try{
+                int count= Driver.countOfElements(GetElementWay.XPATH,Testingcase.getModePath());
+                System.out.println("元素数量= "+count);
+                Element ElementOperations=Driver.getElement(GetElementWay.XPATH,Testingcase.getModePath(),Integer.parseInt(Testingcase.getText()));
+                if(Testingcase.getModel().equals("点击列表"))
+                {
+                    ElementOperations.click();
+                }
+                else if(Testingcase.getModel().equals("输入列表"))
+                {
+                    ElementOperations.clearText();
+                    ElementOperations.sendKeys(Testingcase.getText());
+                }
+            }catch (Exception e) {
+                return 4;
+            }
+            return  8;
+        }
+    //用于ui执行自动化过程中，插入接口请求的步骤
+    else if (Testingcase.getModel().equals("http")||Testingcase.getModel().equals("https"))
+        {
+            if(Testingcase.getContextInterfaceReturn().contains( "GetCookie" ))
+            {
+                String[] CookieContent= PostGet.YmhttpsRequest.GetCookiesSevenVersions(Testingcase.getModePath(),PostGet.YmContentType).split(";");
+                Cookie=CookieContent[0];
+            }
+            String getAuthorizationPost=Testingcase.getAuthorization();
+            if(!Testingcase.getAuthorization().equals("空"))
+            {
+                getAuthorizationPost = GetReturnContent.ReplaceContextBySub(Testingcase.getAuthorization(), PostGet.YmTotalVariables);
+            }
+
+            if(Testingcase.getMode().equalsIgnoreCase("post")|| Testingcase.getMode().equalsIgnoreCase("postform"))
+            {
+                //截取请求返回值
+                if(Testingcase.getContextInterfaceReturn().contains( "return" ))
+                {
+                    PostGet.PostRetrun(Testingcase,Cookie,getAuthorizationPost);
+                }
+                else  if (Testingcase.getContextInterfaceReturn().contains( "replace" ))
+                {
+                    PostGet.PostReplace(Testingcase,Cookie,getAuthorizationPost);
+                }
+                else if(Testingcase.getContextInterfaceReturn().contains( "bothoperation" ))
+                {
+                    PostGet.PostBothoperation(Testingcase,Cookie,getAuthorizationPost);
+                }
+                //没有任何操作
+                else
+                {
+                   PostGet.PostBase(Testingcase,Testingcase.getModePath(),Testingcase.getText(),Testingcase.getAppAuthentication(),Cookie,getAuthorizationPost);
+
+                }
+              }
+            else if(Testingcase.getMode().equalsIgnoreCase("get"))
+            {
+                if(Testingcase.getContextInterfaceReturn().contains( "return" ))
+                {
+                    PostGet.GetRetrun(Testingcase,Cookie,getAuthorizationPost);
+                }
+                else  if (Testingcase.getContextInterfaceReturn().contains( "replace" )||Testingcase.getContextInterfaceReturn().contains( "replaceUIvisit" ))
+                {
+                    PostGet.GetReplace(Driver,Testingcase,Cookie,getAuthorizationPost);
+                }
+                else if(Testingcase.getContextInterfaceReturn().contains( "bothoperation" ))
+                {
+                    PostGet.GetBothoperation(Testingcase,Cookie,getAuthorizationPost);
+                }
+                //没有任何操作
+                else
+                    {
+                        PostGet.GetBase(Testingcase,Testingcase.getModePath(),Testingcase.getAppAuthentication(),Cookie,getAuthorizationPost);
+                    }
+            }
+            return 8;
+        }
     //获取元素文本值
     else if (Testingcase.getModel().equals("查验")) {
         try{
@@ -207,12 +324,12 @@ public class Execute {
         {
             EventListenerMonitoring.Listenerflag=2;
         }
-        if(Returnbody.contains("未完成")||Returnbody.contains("正在")||Returnbody.contains("未搜索"))
+        if(Returnbody.contains("未完成")||Returnbody.contains("正在")||Returnbody.contains("未搜索")||Returnbody.contains("暂无"))
         {
             EventListenerMonitoring.Listenerflag=2;
             Assert.assertEquals("  "+ Returnbody +"  !  ","");
         }
-        else if(Returnbody.contains("共"))
+        else if(Returnbody.contains("共"))//用于统计数量
         {
             Returnbody=Returnbody.substring( Returnbody.indexOf( "共" )+1,Returnbody.length()).trim();
             return 3;

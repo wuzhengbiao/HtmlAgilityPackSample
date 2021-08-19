@@ -93,23 +93,14 @@ public class HttpRequestMethod {
              * 获取响应码
              */
             int statusCode = Getresponse.getStatusLine().getStatusCode();
-            if (SUCCESS_CODE == statusCode) {
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
                 /**
                  * 通过EntityUitls获取返回内容
                  */
                 String result = EntityUtils.toString( Getresponse.getEntity(), "UTF-8" );
-                if(StringSubByContent.SubByContentLBorRB(result,"{\"code\":",",\"",1).equals( "200" ))
-                {
                     HttpStatusFlag="1";//成功标记
                     System.out.print( "Get请求的响应结果: " + result + "\n" );
                     return result;
-                }
-                else {
-                    System.out.print( "Get请求的 status 失败！" + "\n" );
-                    HttpStatusFlag="0";//失败标记
-                    EventListenerMonitoring.Listenerflag=2;
-                    return  result;
-                }
             } else {
                 System.out.print( "get请求失败！" + "\n" );
                 EventListenerMonitoring.Listenerflag=2;
@@ -124,6 +115,63 @@ public class HttpRequestMethod {
         } finally {
             Getresponse.close();
             client.close();
+        }
+    }
+    /**
+     * 发送GET请求body是字符串
+     * @param url
+     * @return JSON或者字符串
+     * @throws Exception
+     */
+    public  Object SendGetNullBodySevenVersion(String url,String Conten_type,String Cookie) throws Exception {
+        HttpStatusFlag="";
+        CloseableHttpClient client = null;
+        CloseableHttpResponse Getresponse = null;
+        try {
+            /**
+             *  创建一个httpclient对象
+             */
+            client = HttpClients.createDefault();
+            /**
+             * 创建一个get对象
+             */
+            HttpGet get = new HttpGet( url.trim() );
+            /**
+             * 设置请求的报文头部的编码
+             */
+            get.setHeader( new BasicHeader( "Content-Type",  Conten_type+";charset=utf-8" ) );
+            get.setHeader( new BasicHeader( "Cookie",  Cookie ) );
+            /**
+             * 设置请求的报文头部授权和格式
+             */
+            get.setHeader( new BasicHeader( "accept", "application/json" ) );
+            /**
+             * 执行post请求
+             */
+            Getresponse = client.execute( get );
+            /**
+             * 获取响应码
+             */
+            int statusCode = Getresponse.getStatusLine().getStatusCode();
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
+                /**
+                 * 通过EntityUitls获取返回内容
+                 */
+                String result = EntityUtils.toString( Getresponse.getEntity(), "UTF-8" );
+                    HttpStatusFlag="1";//成功标记
+                    System.out.print( "Get请求的响应结果: " + result + "\n" );
+                    return result;
+            } else {
+                System.out.print( "get请求失败！" + "\n" );
+                EventListenerMonitoring.Listenerflag=2;
+                HttpStatusFlag="0";//失败标记
+                return  Getresponse;
+            }
+        } catch (Exception e) {
+            System.out.print( "get请求异常！" + "\n" );
+            HttpStatusFlag="0";
+            EventListenerMonitoring.Listenerflag=2;
+            return Getresponse;
         }
     }
     /**
@@ -172,7 +220,7 @@ public class HttpRequestMethod {
              */
             int statusCode = response.getStatusLine().getStatusCode();
             System.out.print( "GET请求code值：" + httpGet + "\n" );
-            if (SUCCESS_CODE == statusCode) {
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
                 /**
                  * 获取返回对象
                  */
@@ -249,7 +297,7 @@ public class HttpRequestMethod {
              * 获取响应码
              */
             int statusCode = response.getStatusLine().getStatusCode();
-            if (SUCCESS_CODE == statusCode) {
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
                 /**
                  * 通过EntityUitls获取返回内容
                  */
@@ -323,7 +371,76 @@ public class HttpRequestMethod {
              */
             int statusCode = response.getStatusLine().getStatusCode();
             System.out.print( "code= "+ statusCode+"\n");
-            if (SUCCESS_CODE == statusCode) {
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
+                /**
+                 * 通过EntityUitls获取返回内容
+                 */
+                String result = EntityUtils.toString( response.getEntity(), "UTF-8" );
+                System.out.print( "POST请求结果响应: " + result + "\n" );
+                HttpStatusFlag="1";//成功标记
+                return result;
+            }
+            else{
+                System.out.print( "POST请求失败！" + "\n" );
+                HttpStatusFlag="0";//失败标记
+                EventListenerMonitoring.Listenerflag=2;
+                return  response;
+            }
+        } catch (Exception e) {
+            System.out.print( "POST请求异常！" + "\n" );
+            HttpStatusFlag="0";
+            EventListenerMonitoring.Listenerflag=2;
+            return response;
+        } finally {
+            response.close();
+            client.close();
+        }
+    }
+    /**
+     *
+     * @param url 请求url
+     * @param json  参数string
+     * @param Conten_type  类型
+     * @return  返回请求值
+     * @throws Exception
+     */
+    public  Object SendPostStringSevernVersions(String url, String json,String Conten_type,String Cookie) throws Exception {
+        HttpStatusFlag="";
+        CloseableHttpClient client = null;
+        CloseableHttpResponse response = null;
+        try {
+            /**
+             *  创建一个httpclient对象
+             */
+            client = HttpClients.createDefault();
+            /**
+             * 创建一个post对象
+             */
+            HttpPost post = new HttpPost( url.trim() );
+            /**
+             * 包装成一个Entity对象
+             */
+            StringEntity entity = new StringEntity( json, "UTF-8" );
+            post.setEntity( entity );
+            /**
+             * 设置请求的报文头部的编码
+             */
+            post.setHeader( new BasicHeader( "Content-Type",  Conten_type+";charset=utf-8" ) );
+            post.setHeader( new BasicHeader( "Cookie",  Cookie ) );
+            /**
+             * 设置请求的报文头部授权和格式
+             */
+            post.setHeader( new BasicHeader( "accept", "application/json, text/plain, */*" ) );
+            /**
+             * 执行post请求
+             */
+            response = client.execute( post );
+            /**
+             * 获取响应码
+             */
+            int statusCode = response.getStatusLine().getStatusCode();
+            System.out.print( "code= "+ statusCode+"\n");
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
                 /**
                  * 通过EntityUitls获取返回内容
                  */

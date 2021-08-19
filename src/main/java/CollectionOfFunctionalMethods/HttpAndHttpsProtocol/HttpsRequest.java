@@ -2,6 +2,7 @@ package CollectionOfFunctionalMethods.HttpAndHttpsProtocol;
 import CollectionOfFunctionalMethods.BasicMethods.EventListenerMonitoring;
 import CollectionOfFunctionalMethods.BasicMethods.StringSubByContent;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -29,7 +30,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 /**
- * [Project]:Wuzb  <br/>
+ * [author]:Wuzb  <br/>
  * [Email]:942189908@qq.com <br/>
  * [Date]:2020/3/04  <br/>
  * [Description]:  <br/>
@@ -47,7 +48,187 @@ public class HttpsRequest {
                 new NoopHostnameVerifier() );
         return HttpClients.custom().setSSLSocketFactory( sslSf ).build();
     }
+    /**
+     * 发送GET请求body是字符串
+     * @param url
+     * @return JSON或者字符串
+     * @throws Exception
+     */
+    public  String GetCookiesSevenVersions(String url,String Conten_type) throws Exception {
+        HttpSStatusFlag="";
+        CloseableHttpClient client = null;
+        CloseableHttpResponse Getresponse = null;
+        try {
+            /**
+             *  创建一个httpclient对象
+             */
+            client = createHttpClient();
+            /**
+             * 创建一个get对象
+             */
+            HttpGet get = new HttpGet( url.trim() );
+            /**
+             * 设置请求的报文头部的编码
+             */
+            get.setHeader( new BasicHeader( "Content-Type",  Conten_type+";charset=utf-8" ) );
+            /**
+             * 设置请求的报文头部授权和格式
+             */
+            get.setHeader( new BasicHeader( "accept", "application/json, text/plain, */*" ) );
+            /**
+             * 执行post请求
+             */
+            Getresponse = client.execute( get );
+              //获取response中的cookie值
+                String cookie = "";
+                String value = null;
+                Header[] headers = Getresponse.getHeaders("Set-Cookie");
+                for (int i = 0; i < headers.length; i++) {//取出所有的cookie值
+                    value = headers[i].getValue();
+                    System.out.println("第"+i+"次的值为："+value);
+                    cookie+=value;
+                }
+                return headers[0].getValue();
 
+        } catch (Exception e) {
+            HttpSStatusFlag="0";
+            EventListenerMonitoring.Listenerflag=2;
+            return "get请求异常,检查一下请求参数！";
+        } finally {
+            Getresponse.close();
+            client.close();
+        }
+    }
+    /**
+     * 发送GET请求body是字符串
+     * @param url
+     * @return JSON或者字符串
+     * @throws Exception
+     */
+    public  Object SendGetSNullBody(String url,String Conten_type,String AppAuthentication,String Authorization) throws Exception {
+        HttpSStatusFlag="";
+        CloseableHttpClient client = null;
+        CloseableHttpResponse Getresponse = null;
+        try {
+            /**
+             *  创建一个httpclient对象
+             */
+            client = createHttpClient();
+            /**
+             * 创建一个get对象
+             */
+            HttpGet get = new HttpGet( url.trim() );
+            /**
+             * 设置请求的报文头部的编码
+             */
+            get.setHeader( new BasicHeader( "Content-Type",  Conten_type+";charset=utf-8" ) );
+            get.setHeader( new BasicHeader("App-Authentication",AppAuthentication.trim()) );
+            get.setHeader( new BasicHeader("Authorization",Authorization.trim()) );
+            /**
+             * 设置请求的报文头部授权和格式
+             */
+            get.setHeader( new BasicHeader( "accept", "application/json, text/plain, */*" ) );
+            /**
+             * 执行post请求
+             */
+            Getresponse = client.execute( get );
+            /**
+             * 获取响应码
+             */
+            int statusCode = Getresponse.getStatusLine().getStatusCode();
+        /*    String AppAuthenticationcookie = "";
+            String value = null;
+            Header[] headers = Getresponse.getHeaders("App-Authentication");
+            for (int i = 0; i < headers.length; i++) {//取出所有的cookie值
+                value = headers[i].getValue();
+                System.out.println("第"+i+"次的值为："+value);
+                AppAuthenticationcookie+=value;
+            }*/
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
+                /**
+                 * 通过EntityUitls获取返回内容
+                 */
+                String result = EntityUtils.toString( Getresponse.getEntity(), "UTF-8" );
+                    HttpSStatusFlag="1";//成功标记
+                    System.out.print( "Get请求的响应结果: " + result + "\n" );
+                    return result;
+            } else {
+                System.out.print( "get请求失败！" + "\n" );
+                EventListenerMonitoring.Listenerflag=2;
+                HttpSStatusFlag="0";//失败标记
+                return  Getresponse;
+            }
+        } catch (Exception e) {
+            System.out.print( "get请求异常！" + "\n" );
+            HttpSStatusFlag="0";
+            EventListenerMonitoring.Listenerflag=2;
+            return Getresponse;
+        } finally {
+            Getresponse.close();
+            client.close();
+        }
+    }
+    /**
+     * 发送GET请求body是字符串
+     * @param url
+     * @return JSON或者字符串
+     * @throws Exception
+     */
+    public  Object SendGetSNullBodySevenVersions(String url,String Conten_type,String Cookie) throws Exception {
+        HttpSStatusFlag="";
+        CloseableHttpClient client = null;
+        CloseableHttpResponse Getresponse = null;
+        try {
+            /**
+             *  创建一个httpclient对象
+             */
+            client = createHttpClient();
+            /**
+             * 创建一个get对象
+             */
+            HttpGet get = new HttpGet( url.trim() );
+            /**
+             * 设置请求的报文头部的编码
+             */
+            get.setHeader( new BasicHeader( "Content-Type",  Conten_type+";charset=utf-8" ) );
+            get.setHeader( new BasicHeader( "Cookie",  Cookie ) );
+            /**
+             * 设置请求的报文头部授权和格式
+             */
+            get.setHeader( new BasicHeader( "accept", "application/json, text/plain, */*" ) );
+            /**
+             * 执行post请求
+             */
+            Getresponse = client.execute( get );
+            /**
+             * 获取响应码
+             */
+            int statusCode = Getresponse.getStatusLine().getStatusCode();
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
+                /**
+                 * 通过EntityUitls获取返回内容
+                 */
+                String result = EntityUtils.toString(Getresponse.getEntity(), "UTF-8");
+                System.out.print("Get请求的成功响应结果: " + result + "\n");
+                HttpSStatusFlag = "1";//成功标记
+                return result;
+            } else {
+                System.out.print( "get请求失败！" + "\n" );
+                EventListenerMonitoring.Listenerflag=2;
+                HttpSStatusFlag="0";//失败标记
+                System.out.print("Get请求的失败响应结果: " + Getresponse + "\n");
+                return  Getresponse;
+            }
+        } catch (Exception e) {
+            System.out.print( "get请求异常！" + "\n" );
+            HttpSStatusFlag="0";
+            EventListenerMonitoring.Listenerflag=2;
+            return Getresponse;
+        } finally {
+            Getresponse.close();
+            client.close();
+        }
+    }
     /**
      * 发送GET请求
      * @throws Exception
@@ -89,7 +270,7 @@ public class HttpsRequest {
              * 获取响应吗
              */
             int statusCode = response.getStatusLine().getStatusCode();
-            if (SUCCESS_CODE == statusCode) {
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
                 /**
                  * 获取返回对象
                  */
@@ -143,11 +324,8 @@ public class HttpsRequest {
             /**
              * 包装成一个Entity对象
              */
-        /*    if(!json.contains( "空" ))
-            {
                 StringEntity entity = new StringEntity( json, "UTF-8" );
                 post.setEntity( entity );
-            }*/
             /**
              * 设置请求的报文头部的编码
              */
@@ -158,7 +336,7 @@ public class HttpsRequest {
             post.setHeader( new BasicHeader("App-Authentication",AppAuthentication.trim()) );
             post.setHeader( new BasicHeader("Authorization",Authorization.trim()) );
             post.setHeader( new BasicHeader( "accept", "application/json, text/plain, */*" ) );
-            post.setHeader( new BasicHeader( "Referer", json.trim()) );
+          //  post.setHeader( new BasicHeader( "Referer", json.trim()) );
             /**
              ** 执行post请求
              */
@@ -168,23 +346,14 @@ public class HttpsRequest {
              */
             int statusCode = response.getStatusLine().getStatusCode();
             System.out.print( "POSTS的code:" + statusCode + "\n" );
-            if (SUCCESS_CODE == statusCode) {
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
                 /**
                  * 通过EntityUitls获取返回内容
                  */
                 String result = EntityUtils.toString( response.getEntity(), "UTF-8" );
                 System.out.print( "POSTS请求结果响应: " + result + "\n" );
-                if(StringSubByContent.SubByContentLBorRB(result,"{\"code\":",",\"",1).equals( "200" ))
-                {
                     HttpSStatusFlag="1";//成功标记
                     return result;
-                }
-                else {
-                    System.out.print( "POSTS请求的 status 失败！" + "\n" );
-                    HttpSStatusFlag="0";//失败标记
-                    EventListenerMonitoring.Listenerflag=2;
-                    return  result;
-                }
             }
             else{
                 System.out.print( "POSTS请求失败！" + "\n" );
@@ -203,15 +372,15 @@ public class HttpsRequest {
         }
     }
     /**
-     * 发送POST请求表单
+     * 发送POST请求，除表单外
      *
      * @param url
-     * @param nameValuePairList
+     * @param json
      * @return JSON或者字符串
      * @throws Exception
      */
-    public  Object SendPostForm(String url, List <NameValuePair> nameValuePairList,String Conten_type) throws Exception {
-        JSONObject jsonObject = null;
+    //请求头为非josn的
+    public  Object SendPostsSevenVersions(String url, String json,String Conten_type,String Cookie) throws Exception {
         CloseableHttpClient client = null;
         CloseableHttpResponse response = null;
         try {
@@ -226,54 +395,50 @@ public class HttpsRequest {
             /**
              * 包装成一个Entity对象
              */
-            StringEntity entity = new UrlEncodedFormEntity( nameValuePairList, "UTF-8" );
+            StringEntity entity = new StringEntity( json, "UTF-8" );
             post.setEntity( entity );
-            System.out.print( "POST请求的entity:" + entity + "\n" );
             /**
              * 设置请求的报文头部的编码
              */
             post.setHeader( new BasicHeader( "Content-Type",  Conten_type+";charset=utf-8" ) );
+            post.setHeader( new BasicHeader( "Cookie",  Cookie ) );
             /**
-             * 设置请求的报文头部的编码
+             * 设置请求的报文头部授权和格式
              */
-            post.setHeader( new BasicHeader( "accept", "application/json" ) );
+            post.setHeader( new BasicHeader( "accept", "application/json, text/plain, */*" ) );
+            //  post.setHeader( new BasicHeader( "Referer", json.trim()) );
             /**
-             * 执行post请求
+             ** 执行post请求
              */
-            System.out.print( "POSTS请求的全部内容:" + post + "\n" );
             response = client.execute( post );
             /**
              * 获取响应码
              */
             int statusCode = response.getStatusLine().getStatusCode();
-            if (SUCCESS_CODE == statusCode) {
+            System.out.print( "POSTS的code:" + statusCode + "\n" );
+            if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
                 /**
                  * 通过EntityUitls获取返回内容
                  */
                 String result = EntityUtils.toString( response.getEntity(), "UTF-8" );
-                System.out.print( "POST请求结果响应: " + result + "\n" );
-                /**
-                 * 转换成json,根据合法性返回json或者字符串
-                 */
-                try {
-                    jsonObject = JSONObject.parseObject( result );
-                    return jsonObject;
-                } catch (Exception e) {
-                    return result;
-                }
-            } else {
+                System.out.print( "POSTS请求结果响应: " + result + "\n" );
+                HttpSStatusFlag="1";//成功标记
+                return result;
+            }
+            else{
                 System.out.print( "POSTS请求失败！" + "\n" );
+                HttpSStatusFlag="0";//失败标记
                 EventListenerMonitoring.Listenerflag=2;
                 return  response;
             }
         } catch (Exception e) {
             System.out.print( "POSTS请求异常！" + "\n" );
+            HttpSStatusFlag="0";
             EventListenerMonitoring.Listenerflag=2;
-            return  response;
+            return response;
         } finally {
             response.close();
             client.close();
         }
     }
-
 }

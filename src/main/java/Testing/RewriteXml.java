@@ -17,7 +17,7 @@ public class RewriteXml {
         String classPath=null;
         String[] XmlContext= null;
         GetLocalConfig configclass=new GetLocalConfig();
-        String config=configclass.ReadConfigFile();
+        String config=configclass.ReadConfigFile("config.txt");
         XmlContext= configclass.GetBySemicolonFromConfigFile(config);
         //创建Document实例  
         Document document = DocumentHelper.createDocument();
@@ -53,6 +53,9 @@ public class RewriteXml {
             Element parameter3= test.addElement( "parameter" );
             parameter3.addAttribute("name", "TestName");
             parameter3.addAttribute("value", XmlContext[testnum].trim());
+            Element parameter5= test.addElement( "parameter" );
+            parameter5.addAttribute("name", "IfDataPrepare");
+            parameter5.addAttribute("value", "否");
             //创建节点classes，无属性  
             Element classes = test.addElement( "classes" );
             //创建节点classs，并设置name属性  
