@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="test" parallel="false" thread-count="2">
+    <listeners>
+        <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+        <listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
+        <listener class-name="CollectionOfFunctionalMethods.BasicMethods.AssertionListener" />
+        <listener class-name="CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer"/>
+    </listeners>
+    <test name="按报告创建jira问题">
+        <parameter name="TestFilePath" value="/TestList/JiraCreate.xlsx"/>
+        <parameter name="PlatformName" value="Jira项目-jira创建"/>
+        <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="是"/>
+        <parameter name="TestName" value="JiraCreate.xlsx"/>
+        <classes>
+            <class name="Testing.DataBaseJiraTester"/>
+        </classes>
+    </test>
+
+
+</suite>
+

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="test" parallel="false" thread-count="2">
+    <listeners>
+        <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+        <listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
+        <listener class-name="CollectionOfFunctionalMethods.BasicMethods.AssertionListener" />
+        <listener class-name="CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer"/>
+    </listeners>
+       
+	 <test name="5.0山东考试">
+        <!--以下是为@test方法中进行赋值-->
+        <parameter name="TestFilePath" value="/TestList/6.0SJbuyclass.xlsx"/>
+        <parameter name="PlatformName" value="6.0SJbuyclass.xlsx"/>
+        <parameter name="TIME" value="2"/>
+         <parameter name="IfDataPrepare" value="否"/>
+         <parameter name="TestName" value="6.0SJbuyclass.xlsx"/>
+
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>  
+
+
+</suite>
+

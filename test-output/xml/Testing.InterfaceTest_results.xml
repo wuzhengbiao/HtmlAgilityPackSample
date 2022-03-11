@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Grahql管理端接口查询"
+           tests="1"
+           failures="0"
+           errors="0"
+           skipped="0"
+           time="2.921">
+  <properties />
+  
+  
+            <testcase name="interfacetest" time="2.921" classname="Testing.InterfaceTest" />
+      
+</testsuite>

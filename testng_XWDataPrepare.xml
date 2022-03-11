@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite" verbose="0" >
+    <listeners>
+        <listener class-name="org.uncommons.reportng.HTMLReporter"/>
+        <listener class-name="org.uncommons.reportng.JUnitXMLReporter" />
+        <listener class-name="CollectionOfFunctionalMethods.BasicMethods.AssertionListener" />
+        <listener class-name="CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer"/>
+    </listeners>
+    <test name="补贴现网学员端">
+        <parameter name="TestFilePath" value="/TestList/8.0BTPXStudy.xlsx"/>
+        <parameter name="PlatformName" value="重点项目-补贴现网学员端"/>
+        <parameter name="TIME" value="5"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="8.0BTPXStudy.xlsx"/>
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>
+    <test name="补贴现网管理端">
+        <parameter name="TestFilePath" value="/TestList/8.0BTPX-OrderNum.xlsx"/>
+        <parameter name="PlatformName" value="重点项目-补贴现网管理端"/>
+        <parameter name="TIME" value="5"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="8.0BTPX-OrderNum.xlsx"/>
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>
+    <test name="福建会计学员学习">
+        <parameter name="TestFilePath" value="/TestList/fjkj200507.xlsx"/>
+        <parameter name="PlatformName" value="重点项目-7.0福建会计学员学习"/>
+        <parameter name="TIME" value="2"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="fjkj200507.xlsx"/>
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>
+
+</suite>
