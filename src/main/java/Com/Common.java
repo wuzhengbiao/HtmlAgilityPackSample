@@ -6,7 +6,7 @@ package Com;
 public class Common {
     public static final String OFFICE_EXCEL_2003_POSTFIX = "xls";
     public static final String OFFICE_EXCEL_2010_POSTFIX = "xlsx";
-
+    //配置文件
     public static final String EMPTY = "";
     public static final String POINT = ".";
     //由于相对地址使用有问题因此先放置该问题的处理
