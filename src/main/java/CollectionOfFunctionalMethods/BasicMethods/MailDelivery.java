@@ -91,6 +91,27 @@ public class MailDelivery {
             // 设置邮件正文
             message.setContent("TC现网动态临时用例失败,请点击后面的url查看失败结果  "+"\n\n"+"<a href='http://macaca.fjchjlan.59iedu.com:1457/History/TheReportTMP/surefire-reports/html/index.html'>http://macaca.fjchjlan.59iedu.com:1457/History/TheReportTMP/surefire-reports/html/index.html</a>","text/html;charset=UTF-8");
         }
+        else if(testngType.contains( "重点项目" ))
+        {
+            // 设置邮件标题
+            message.setSubject("《TC重点项目报告反馈结果》");
+            // 设置邮件正文
+            message.setContent("TC重点项目失败,请点击后面的url查看失败结果  "+"\n\n"+"<a href='http://macaca.fjchjlan.59iedu.com:1457/History/TheReportXWDataPrepare/surefire-reports/html/index.html'>http://macaca.fjchjlan.59iedu.com:1457/History/TheReportXWDataPrepare/surefire-reports/html/index.html</a>","text/html;charset=UTF-8");
+        }
+        else if(testngType.contains( "准备项目" ))
+        {
+            // 设置邮件标题
+            message.setSubject("《TC准备项目报告反馈结果》");
+            // 设置邮件正文
+            message.setContent("TC准备项目失败,请点击后面的url查看失败结果  "+"\n\n"+"<a href='http://macaca.fjchjlan.59iedu.com:1457/History/TheReportDataPrepare/surefire-reports/html/index.html'>http://macaca.fjchjlan.59iedu.com:1457/History/TheReportDataPrepare/surefire-reports/html/index.html</a>","text/html;charset=UTF-8");
+        }
+        else if(testngType.contains( "Jira项目" ))
+        {
+            // 设置邮件标题
+            message.setSubject("《TC Jira项目报告反馈结果》");
+            // 设置邮件正文
+            message.setContent("TC Jira项目失败,请点击后面的url查看失败结果  "+"\n\n"+"<a href='http://macaca.fjchjlan.59iedu.com:1457/History/TheReportJira/surefire-reports/html/index.html'>http://macaca.fjchjlan.59iedu.com:1457/History/TheReportJira/surefire-reports/html/index.html</a>","text/html;charset=UTF-8");
+        }
         else
         {
             // 设置邮件标题

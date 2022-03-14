@@ -8,11 +8,11 @@ import CollectionOfFunctionalMethods.ServerPortAndIdRelated.QueryMacacaSeverPort
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer;
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIReTry;
 import CollectionOfFunctionalMethods.UseCaseReRunCorrelation.ReTryTimes;
-import DingDingTalk.DingTalkCall;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
+import org.testng.ITestNGListenerFactory;
 /**
  * 重写testng监听器5种测试结果的测试方法
  * @author wzb 2019/08/01
@@ -33,19 +33,18 @@ public class AssertionListener extends TestListenerAdapter {
     public void onTestFailure(ITestResult tr) {
         this.handleAssertion(tr);
         EventListenerMonitoring.EventListenerControl( tr );
-        System.out.println("EventListenerMonitoring.Listenerflag= "+EventListenerMonitoring.Listenerflag);
-        try {
-            MailDelivery.TCTestCaseMailSending(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         System.out.println("Testng的监听器onTestFailure！！");
     }
-
+    @Override
+    //失败用例占比在100%以内自动执行
+    public void onTestFailedButWithinSuccessPercentage(ITestResult tr) {
+        this.handleAssertion(tr);
+        EventListenerMonitoring.EventListenerControl( tr );
+        System.out.println("Testng的监听器onTestFailedButWithinSuccessPercentage！！");
+    }
     @Override
     public void onTestSkipped(ITestResult tr) {
         this.handleAssertion(tr);
-        EventListenerMonitoring.Listenerflag=3;
         EventListenerMonitoring.EventListenerControl( tr );
         System.out.println("Testng的监听器onTestSkipped！！");
     }
@@ -55,7 +54,6 @@ public class AssertionListener extends TestListenerAdapter {
         this.handleAssertion(tr);
         ReTryTimes.maxReTryNum=0;//重置最大重跑次数
         ReTryTimes.initReTryNum=0;//重置初始重跑次数
-        EventListenerMonitoring.Listenerflag=0;
         EventListenerMonitoring.EventListenerControl( tr );
         System.out.println("Testng的监听器onTestSuccess！！");
     }
@@ -63,20 +61,25 @@ public class AssertionListener extends TestListenerAdapter {
     //用于监听器完成测试用例后，过滤失败测试报告结果，只保留成功
     public void onFinish(ITestContext context) {
         System.out.println("Testng的监听器onTestFinish！！");
+        //获取所有监听器结果
         Iterator<ITestResult> listOfFailedTests = context.getFailedTests().getAllResults().iterator();
         while (listOfFailedTests.hasNext()) {
             ITestResult failedTest = listOfFailedTests.next();//采集失败结果
             ITestNGMethod method = failedTest.getMethod();
-            if (context.getFailedTests().getResults(method).size() > 1) {
+            if(context.getFailedTests().getResults(method).size() > 1)//若全是失败记录，保留最后一条失败记录
+            {
                 listOfFailedTests.remove();//移除失败的用例报告
             }
-            else {
-                if (context.getPassedTests().getResults(method).size() > 0) {
+            else  {
+                //若没有失败，存在有通过或者跳过的用例记录，移除全部失败记录，只保留成功或者跳过的用例记录。
+                if(context.getPassedTests().getResults(method).size() > 0||context.getSkippedTests().getResults(method).size() > 0)
+                {
                     listOfFailedTests.remove();
+                }
+
                 }
             }
         }
-    }
     /**
      * 收集断言异常结果并输出，用于执行步骤错误可以继续执行动作
      * @author wzb

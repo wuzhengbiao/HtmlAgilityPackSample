@@ -14,7 +14,6 @@ public class GetCurrentSystemTime {
         Date date = new Date(longtime);
         //转换提日期输出格式
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(dateFormat.format(date));
         return dateFormat.format(date);
     }
 }

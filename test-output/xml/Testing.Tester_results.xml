@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="基础数据准备"
+<testsuite name="5.0山东考试"
            tests="1"
            failures="0"
            errors="0"
            skipped="0"
-           time="148.946">
+           time="155.354">
   <properties />
   
   
-            <testcase name="tester" time="148.946" classname="Testing.Tester" />
+            <testcase name="tester" time="155.354" classname="Testing.Tester" />
       
 </testsuite>

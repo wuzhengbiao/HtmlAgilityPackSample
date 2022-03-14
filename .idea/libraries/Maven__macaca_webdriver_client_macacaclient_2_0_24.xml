@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Maven: macaca.webdriver.client:macacaclient:2.0.24">
     <CLASSES>
-      <root url="jar://C:/MVNRepository/macaca/webdriver/client/macacaclient/2.0.24/macacaclient-2.0.24.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/macaca/webdriver/client/macacaclient/2.0.24/macacaclient-2.0.24.jar!/" />
     </CLASSES>
     <JAVADOC>
-      <root url="jar://C:/MVNRepository/macaca/webdriver/client/macacaclient/2.0.24/macacaclient-2.0.24-javadoc.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/macaca/webdriver/client/macacaclient/2.0.24/macacaclient-2.0.24-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
-      <root url="jar://C:/MVNRepository/macaca/webdriver/client/macacaclient/2.0.24/macacaclient-2.0.24-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/macaca/webdriver/client/macacaclient/2.0.24/macacaclient-2.0.24-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

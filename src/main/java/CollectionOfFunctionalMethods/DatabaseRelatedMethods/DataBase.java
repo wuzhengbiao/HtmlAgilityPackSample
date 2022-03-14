@@ -56,7 +56,6 @@ public class DataBase {
         return result;
     }
     public List<String> QueryDatabaseSql(String query) throws SQLException {
-       // String query="SELECT count(*) from platform_exception_informatin_table";
         Connection con=this.DatabaseSqlConect();
         List<String> datalist = new ArrayList<String>();
         System.out.println(query);
@@ -64,7 +63,7 @@ public class DataBase {
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             // System.out.println("PLATFORM_NAME >> "+rs.getString("PLATFORM_NAME"));
-            System.out.println("数量 >> "+rs.getInt(1));
+          //  System.out.println("数量 >> "+rs.getInt(1));
             datalist.add(rs.getString(1));
         }
         this.DatabaseSqlClose(ps,con);

@@ -1,6 +1,7 @@
 package CollectionOfFunctionalMethods.HttpAndHttpsProtocol;
 
 import CollectionOfFunctionalMethods.GraphqlContext.GetReturnContent;
+import Com.ReadExcel;
 import Com.TestingCase;
 import macaca.client.MacacaClient;
 import java.util.HashMap;
@@ -14,19 +15,20 @@ public class PostGetGeneralMethod {
     public HttpsRequest YmhttpsRequest = new HttpsRequest();
     public String YmContentType = "application/json";
     public String YmContentFormType = "application/x-www-form-urlencoded";
+
     //请求的http和https调用post基础用法
     public  void  PostBase(TestingCase Testingcase,String getModePath,String getTextPost,String getAppAuthentication ,String Cookie,String getAuthorizationPost)throws Exception {
         if (Testingcase.getModel().equals("http")) {
-            if (Testingcase.getAppAuthentication().contains("空") && Testingcase.getAuthorization().contains("空")) {
+            if ( Testingcase.getAuthorization().contains("空")&&Testingcase.getAppAuthentication().contains("空")) {
                 Ymresult = YmhttpRequest.SendPostStringSevernVersions(getModePath, getTextPost, YmContentType, Cookie);
             } else {
                 Ymresult = YmhttpRequest.SendPostString(getModePath, getTextPost, getAppAuthentication, YmContentType, getAuthorizationPost);
             }
         } else {
-            if (getAppAuthentication.contains("空") && getAppAuthentication.contains("空")) {
+            if ( Testingcase.getAuthorization().contains("空")&&Testingcase.getAppAuthentication().contains("空")) {
                 Ymresult = YmhttpsRequest.SendPostsSevenVersions(getModePath, getTextPost, YmContentType,Cookie);
             } else {
-                if(Testingcase.getMode().equalsIgnoreCase("postform"))
+                if(Testingcase.getMode().equalsIgnoreCase("postform"))//用于处理报文是表格提交的形式
                 {
                     Ymresult = YmhttpsRequest.SendPosts(getModePath,getTextPost,getAppAuthentication,YmContentFormType,getAuthorizationPost);
                 }
@@ -40,7 +42,7 @@ public class PostGetGeneralMethod {
     public  void  GetBase(TestingCase Testingcase,String getModePath,String getAppAuthentication ,String Cookie,String getAuthorizationPost)throws Exception {
         if(Testingcase.getModel().equals("http"))
         {
-            if(getAppAuthentication.contains("空")&&getAuthorizationPost.contains("空"))
+            if(Testingcase.getAuthorization().contains("空")&&Testingcase.getAppAuthentication().contains("空"))
             {
                 Ymresult = YmhttpRequest.SendGetNullBodySevenVersion(getModePath,YmContentType,Cookie);
             }
@@ -49,7 +51,7 @@ public class PostGetGeneralMethod {
             }
         }
         else {
-            if(getAppAuthentication.contains("空")&&getAuthorizationPost.contains("空"))
+            if(Testingcase.getAuthorization().contains("空")&&Testingcase.getAppAuthentication().contains("空"))
             {
                 Ymresult = YmhttpsRequest.SendGetSNullBodySevenVersions(getModePath,YmContentType,Cookie);
             }
@@ -66,6 +68,7 @@ public class PostGetGeneralMethod {
                 this.PostBase(Testingcase,Testingcase.getModePath(),Testingcase.getText(),Testingcase.getAppAuthentication(),Cookie,getAuthorizationPost);
                 YmInterceptingVariables = GetReturnContent.GetReturnContentBySub(Ymresult.toString(), "#", Testingcase.getContextInterfaceReturn());
                 YmTotalVariables.putAll(YmInterceptingVariables);
+              //  System.out.println("返回值： "+Ymresult.toString());
         }
     }
 
@@ -78,7 +81,7 @@ public class PostGetGeneralMethod {
             getTextPost=GetReturnContent.ReplaceContextBySub( Testingcase.getText(),YmTotalVariables );
             System.out.println("替换后的text： "+getTextPost+"\n");
         }
-        this.PostBase(Testingcase,getModePath,getTextPost, Testingcase.getAppAuthentication(),Cookie,getAuthorizationPost);
+        this.PostBase(Testingcase,getModePath,getTextPost,Testingcase.getAppAuthentication(),Cookie,getAuthorizationPost);
     }
 
     //既替换text和url的参数值，又截取接口请求返回值post
@@ -101,16 +104,18 @@ public class PostGetGeneralMethod {
         this.GetBase(Testingcase,Testingcase.getModePath(),Testingcase.getAppAuthentication(),Cookie,getAuthorizationPost);
         YmInterceptingVariables= GetReturnContent.GetReturnContentBySub( Ymresult.toString(),"#",Testingcase.getContextInterfaceReturn() );
         YmTotalVariables.putAll( YmInterceptingVariables );
+       // System.out.println("返回值： "+Ymresult.toString());
     }
 
   //替换text和url的参数值get
   public void GetReplace(MacacaClient Driver, TestingCase Testingcase, String Cookie, String getAuthorizationPost) throws Exception
   {
       String getModePath=GetReturnContent.ReplaceContextBySub( Testingcase.getModePath(),YmTotalVariables );
-      if(Testingcase.getModel().equals("http"))
+      if(Testingcase.getModel().equals("http"))//走http
       {
-          if(Testingcase.getAppAuthentication().contains("空")&&Testingcase.getAuthorization().contains("空"))
+          if(Testingcase.getAuthorization().contains("空"))
           {
+              //为了适配7.0的接口登录三部曲的target替换动作
               if(Testingcase.getContextInterfaceReturn().contains( "replaceUIvisit" ))
               {
                   Driver.get(getModePath);
@@ -124,10 +129,11 @@ public class PostGetGeneralMethod {
               Ymresult = YmhttpRequest.SendGetNullBody(getModePath, Testingcase.getAppAuthentication(), YmContentType, getAuthorizationPost);
           }
       }
-      else {
-          if (Testingcase.getAppAuthentication().contains("空") && Testingcase.getAuthorization().contains("空"))
+      else {//走https
+          if ( Testingcase.getAuthorization().contains("空"))
           {
-              if(Testingcase.getContextInterfaceReturn().contains( "replaceUIvisit" ))//判断是否要同时接口和UI访问登录
+              //为了适配7.0的接口登录三部曲的target替换动作
+              if(Testingcase.getContextInterfaceReturn().contains( "replaceUIvisit" ))
               {
                   Driver.get(getModePath);
                   Ymresult = YmhttpsRequest.SendGetSNullBodySevenVersions(getModePath,YmContentType,Cookie);
@@ -137,9 +143,10 @@ public class PostGetGeneralMethod {
               }
           }
           else {
-              Ymresult = YmhttpsRequest.SendGetSNullBody(getModePath, YmContentType, Testingcase.getAppAuthentication(),getAuthorizationPost);
+              Ymresult = YmhttpsRequest.SendGetSNullBody(getModePath, YmContentType,Testingcase.getAppAuthentication(),getAuthorizationPost);
           }
       }
+      //System.out.println("返回值： "+Ymresult.toString());
   }
     //既替换text和url的参数值，又截取接口请求返回值get
     public void GetBothoperation(TestingCase Testingcase,String Cookie,String getAuthorizationPost) throws Exception {
@@ -147,7 +154,7 @@ public class PostGetGeneralMethod {
         this.GetBase(Testingcase,getModePath,Testingcase.getAppAuthentication(),Cookie,getAuthorizationPost);
         YmInterceptingVariables= GetReturnContent.GetReturnContentBySub( Ymresult.toString(),"#",Testingcase.getContextInterfaceReturn() );
         YmTotalVariables.putAll( YmInterceptingVariables );
+       // System.out.println("返回值： "+Ymresult.toString());
     }
-
     }
 

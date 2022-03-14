@@ -1,9 +1,6 @@
 package Com;
 
-import CollectionOfFunctionalMethods.BasicMethods.EventListenerMonitoring;
-import CollectionOfFunctionalMethods.BasicMethods.GetRandom;
-import CollectionOfFunctionalMethods.BasicMethods.RobotAction;
-import CollectionOfFunctionalMethods.BasicMethods.StringSubByContent;
+import CollectionOfFunctionalMethods.BasicMethods.*;
 import CollectionOfFunctionalMethods.DatabaseRelatedMethods.DataBase;
 import CollectionOfFunctionalMethods.GraphqlContext.GetReturnContent;
 import CollectionOfFunctionalMethods.HttpAndHttpsProtocol.HttpRequestMethod;
@@ -17,6 +14,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.testng.Assert;
 import org.testng.Reporter;
+
+import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,17 +34,19 @@ public class Execute {
 //  返回3: 特殊处理报表数据过大截图时间
 //  返回4: 未知的异常
 //  返回5：超时
-//  返回6：接口返回值
 //  返回7：数据库执行成功
 //  返回8：接口数据返回
+//  返回9：列表数据返回
+//  返回10；接口数据比较结果符合
+//  返回11；接口比较结果不符合
+//  返回12；返回纯文本内容
     private String Aftertime="";
     private String beforetime="0";
     private String GetClickText="";
-    private String Intercept_content="";
+    private List<String> JiraValue=new ArrayList<String>();
     public String   Returnbody="";
-    public  Object Ymresult;
     private DataBase DatabaseExecute=new DataBase();
-    private PostGetGeneralMethod PostGet=new PostGetGeneralMethod();
+    public PostGetGeneralMethod PostGet=new PostGetGeneralMethod();
     private String Cookie="";
     public int execute(MacacaClient Driver, TestingCase Testingcase, int T) throws Exception {
         if (Testingcase.getModel().equals("访问")){
@@ -57,53 +58,39 @@ public class Execute {
             catch (Exception e) {
                 return 5;
             }
-
         }
     else if (Testingcase.getModel().equals("输入")){
         //当前绑死使用Xpath方法
         try {
-        if (Driver.waitForElementByXPath(Testingcase.getModePath())==null)
-        {
-            for (int i=1; i <= T; i++)//可以自定义等待区间时长
-            {
-                Driver.sleep(1000);
-                if(Driver.waitForElementByXPath(Testingcase.getModePath())!=null)//隔一秒查找元素,找到元素跳出等待
+            if (DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T)>0) {
                 {
-                    break;
+                    Driver.elementByXPath(Testingcase.getModePath()).clearText();
+                    Driver.elementByXPath(Testingcase.getModePath()).sendKeys(Testingcase.getText());
+                    return 1;
                 }
-                if (i == T) {
-                    return 0;
+            }else
+                {
+                    return  DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T);
                 }
-            }
-        }
-                Driver.elementByXPath(Testingcase.getModePath()).clearText();
-                Driver.elementByXPath(Testingcase.getModePath()).sendKeys(Testingcase.getText());
-                return 1;
+
     }catch (Exception e) {
             return 4;
         }
             }
     else if (Testingcase.getModel().equals("点击")) {
         try {
-            if (Driver.waitForElementByXPath(Testingcase.getModePath()) == null) {
-                for (int i = 1; i <= T; i++)//可以自定义等待区间时长
-                {
-                    Driver.sleep(1000);
-                    if (Driver.waitForElementByXPath(Testingcase.getModePath()) != null)//隔一秒查找元素,找到元素跳出等待
-                    {
-                        break;
-                    }
-                    if (i == T) {
-                        return 0;
-                    }
-                }
-            }
+            if (DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T)>0) {
             Driver.elementByXPath(Testingcase.getModePath()).click();
             if (Testingcase.getText().contains("文本")) {
                 GetClickText = Driver.elementByXPath(Testingcase.getModePath()).getText();
                 Aftertime=GetClickText;//当前点击元素获取到的文本值赋值给被比较的成员
             }
             return 1;
+            }
+            else
+            {
+                return  DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T);
+            }
         } catch (Exception e) {
             return 4;
         }
@@ -150,23 +137,30 @@ public class Execute {
         }
     else if (Testingcase.getModel().equals("上传"))
         {
-            if (Driver.waitForElementByXPath(Testingcase.getModePath())==null)
-            {
-                System.out.println("找了四遍没有找到，开始等待！\n");
-                for (int i=1; i <= T; i++)//可以自定义等待区间时长
-                {
-                    Driver.sleep(1000);
-                    if(Driver.waitForElementByXPath(Testingcase.getModePath())!=null)//隔一秒查找元素
-                    {
-                        System.out.println("等待了："+i+"秒,找到元素了");
-                        break;
-                    }
-                    if (i == T) {
-                        return 0;
-                    }
-                }
-            }
+            if (DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T)>0) {
             Driver.elementByXPath(Testingcase.getModePath()).sendKeys(Testingcase.getText());
+            return 1;
+            }
+            else{
+                return DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T);
+            }
+        }
+    else if (Testingcase.getModel().equals("上传文件夹"))
+        {
+            LookForphoto lookpath=new LookForphoto();
+            File file = new File(Testingcase.getText());
+            List<String> imgpath=new ArrayList<String>();
+            imgpath=lookpath.printDirectory(file,lookpath.depth);
+            if (DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T)>0) {
+                for(int filesNum=0;filesNum<imgpath.size();filesNum++)
+                {
+                    Driver.elementByXPath(Testingcase.getModePath()).sendKeys(imgpath.get(filesNum));
+                }
+                return 1;
+            }
+            else{
+                return DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T);
+            }
         }
     else if (Testingcase.getModel().equals("数据库"))
         {
@@ -179,12 +173,9 @@ public class Execute {
             else{
                 return 0;
             }
-
         }
     else if (Testingcase.getModel().equals("比较")) {
-        System.out.print("beforetime= " + beforetime + "\n" + "Aftertime= " + Aftertime + "\n");
         if (!Aftertime.equals(beforetime)) {
-            System.out.print("进入比较不相等了" + "\n");
             if (Testingcase.getText().equals("相等")) {
                 EventListenerMonitoring.Listenerflag = 2;
                 Assert.assertEquals("不相等", "相等", "前后值比较失败啦!初始值="+beforetime+" 比较值= "+Aftertime);
@@ -199,7 +190,6 @@ public class Execute {
             }
             else{
                 EventListenerMonitoring.Listenerflag = 2;
-                System.out.println(" excute EventListenerMonitoring.Listenerflag= "+EventListenerMonitoring.Listenerflag);
 				Assert.assertEquals("相等", "不相等", "前后值比较失败啦!初始值="+beforetime+" 比较值= "+Aftertime);
             }
         }
@@ -207,28 +197,35 @@ public class Execute {
         return 1;
     }
     //该方法适用于页面输入get的输入url，并获取其页面上的返回值替换
-    else if (Testingcase.getModel().equals("接口截取"))//用于之前周口专技验证，现在基本不用了，用下列的接口请求也可以做到
-    {
-        try{
-            String[] Interface=null;
-            Interface=Testingcase.getText().split("#");
-            String TestingcaseModePath=null;
-            for(int listnum=0;listnum<=(Interface.length-1)/2;listnum+=2) {
-                System.out.println(Interface[listnum] + "Interface[listnum+1]的值=" + Interface[listnum + 1] + "Interface[listnum+2]的值=" + Interface[listnum + 2] + "\n");
-                Intercept_content = StringSubByContent.SubByContentLBorRB(GetClickText, Interface[listnum+1],Interface[listnum+2], 1);
-                System.out.println( "Intercept_contentb报文截取值="+ Intercept_content);
+    else if (Testingcase.getModel().equals("接口比较"))
+        {
+                String compare[] = Testingcase.getText().split("#");
+                System.out.println(PostGet.YmTotalVariables.get(compare[0].trim())+compare[1].trim());
+        try {
+            if (compare[2].trim().equals("相等")) {
+                if (!PostGet.YmTotalVariables.get(compare[0].trim()).equalsIgnoreCase(compare[1].trim())) {
+                    EventListenerMonitoring.Listenerflag = 2;
+                    return 11;
+                }
             }
-            Aftertime=Intercept_content;//要比较的值赋值给被比较成员
-            return 1;
+            else{
+                if (PostGet.YmTotalVariables.get(compare[0].trim()).equalsIgnoreCase(compare[1].trim()) ) {
+                    EventListenerMonitoring.Listenerflag = 2;
+                    return 11;
+                }
+            }
         }catch (Exception e) {
-            return 4;
-        }
-    }
+            if (PostGet.YmTotalVariables.get(compare[0].trim()).equalsIgnoreCase(compare[1].trim())) {
+                EventListenerMonitoring.Listenerflag = 2;
+                return 11;
+                }
+            }
+        return 10;
+            }
         else if (Testingcase.getModel().contains("列表"))//针对元素定位会返回多个元素情况，指定操作某个元素
         {
             try{
                 int count= Driver.countOfElements(GetElementWay.XPATH,Testingcase.getModePath());
-                System.out.println("元素数量= "+count);
                 Element ElementOperations=Driver.getElement(GetElementWay.XPATH,Testingcase.getModePath(),Integer.parseInt(Testingcase.getText()));
                 if(Testingcase.getModel().equals("点击列表"))
                 {
@@ -242,12 +239,12 @@ public class Execute {
             }catch (Exception e) {
                 return 4;
             }
-            return  8;
+            return  9;
         }
     //用于ui执行自动化过程中，插入接口请求的步骤
     else if (Testingcase.getModel().equals("http")||Testingcase.getModel().equals("https"))
         {
-            if(Testingcase.getContextInterfaceReturn().contains( "GetCookie" ))
+            if(Testingcase.getContextInterfaceReturn().contains( "GetCookie" ))//获取cookie避免UI和接口同时登录互踢
             {
                 String[] CookieContent= PostGet.YmhttpsRequest.GetCookiesSevenVersions(Testingcase.getModePath(),PostGet.YmContentType).split(";");
                 Cookie=CookieContent[0];
@@ -257,7 +254,6 @@ public class Execute {
             {
                 getAuthorizationPost = GetReturnContent.ReplaceContextBySub(Testingcase.getAuthorization(), PostGet.YmTotalVariables);
             }
-
             if(Testingcase.getMode().equalsIgnoreCase("post")|| Testingcase.getMode().equalsIgnoreCase("postform"))
             {
                 //截取请求返回值
@@ -277,7 +273,6 @@ public class Execute {
                 else
                 {
                    PostGet.PostBase(Testingcase,Testingcase.getModePath(),Testingcase.getText(),Testingcase.getAppAuthentication(),Cookie,getAuthorizationPost);
-
                 }
               }
             else if(Testingcase.getMode().equalsIgnoreCase("get"))
@@ -305,21 +300,9 @@ public class Execute {
     //获取元素文本值
     else if (Testingcase.getModel().equals("查验")) {
         try{
-        if (Driver.waitForElementByXPath(Testingcase.getModePath())==null)
-        {
-            for (int i=1; i <= T; i++)//可以自定义等待区间时长
-            {
-                Driver.sleep(1000);
-                if(Driver.waitForElementByXPath(Testingcase.getModePath())!=null)//隔一秒查找元素,找到元素跳出等待
-                {
-                    break;
-                }
-                if (i == T) {
-                    return 1;
-                }
+            if (DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T)>0) {
+                Returnbody = Driver.elementByXPath(Testingcase.getModePath()).getText();
             }
-        }
-         Returnbody=Driver.elementByXPath(Testingcase.getModePath()).getText();
         if(Returnbody==null)
         {
             EventListenerMonitoring.Listenerflag=2;
@@ -332,11 +315,16 @@ public class Execute {
         else if(Returnbody.contains("共"))//用于统计数量
         {
             Returnbody=Returnbody.substring( Returnbody.indexOf( "共" )+1,Returnbody.length()).trim();
+            if(Returnbody.contains("条"))
+            {
+                Returnbody=Returnbody.substring(0,Returnbody.indexOf( "条" )).trim();
+                System.out.println("数量= "+Returnbody);
+            }
             return 3;
         }
         else
         {
-            return 3;
+            return 12;
         }
     }catch (Exception e) {
             return 4;
@@ -351,28 +339,42 @@ public class Execute {
             if(Testingcase.getModePath().contains("x"))
             {
                 for(int n=0;n<Integer.parseInt(RangeAndNum[1]);n++) {
-                    System.out.print("生成的随机数： "+ random.get( n ).toString()+"\n");
                     String NewPath = Testingcase.getModePath().replaceAll( "x", random.get( n ).toString() );
-                    System.out.print("随机生成的xpath路径 ： "+ NewPath+"\n");
-                    if (Driver.waitForElementByXPath( NewPath ) == null) {
-                        System.out.println( "找了四遍没有找到，开始等待！\n" );
-                        for (int i = 1; i <= T; i++)//可以自定义等待区间时长
-                        {
-                            Driver.sleep( 1000 );
-                            if (Driver.waitForElementByXPath( NewPath ) != null)//隔一秒查找元素
-                            {
-                                System.out.println( "等待了：" + i + "秒,找到元素了" );
-                                break;
-                            }
-                            if (i == T) {
-                                return 0;
-                            }
-                        }
+                    if (DriverWaitingForGeneral.DriverWaite(Driver,Testingcase,T)>0)
+                    {
+                        Driver.elementByXPath( NewPath ).click();
                     }
-                    Driver.elementByXPath( NewPath ).click();
                 }
             }
             return 1;
+        }
+        else if(Testingcase.getModel().equals("采集"))
+        {
+            try {
+                if (DriverWaitingForGeneral.DriverWaite(Driver, Testingcase, T) > 0) {
+                    JiraValue.add(Driver.elementByXPath(Testingcase.getModePath()).getText());
+                }
+            }
+            catch (Exception e)
+            {
+                return 4;
+            }
+            return 13;
+        }
+        else if(Testingcase.getModel().equals("入库"))
+        {
+            String insertsql="";
+            try {
+                for(int num=0;num<=JiraValue.size();num=num+Integer.parseInt(Testingcase.getText()))
+                {
+
+                }
+            }
+            catch (Exception e)
+            {
+                return 4;
+            }
+            return 14;
         }
     else if (Testingcase.getModel().equals("等待")){
         int i = 0;

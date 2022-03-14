@@ -8,11 +8,11 @@
         <listener class-name="CollectionOfFunctionalMethods.UseCaseReRunCorrelation.OverrideIAnnotationTransformer"/>
     </listeners>
     <test name="基础数据准备">
-        <parameter name="TestFilePath" value="/TestList/7.0ZJKSZB.xlsx"/>
-        <parameter name="PlatformName" value="数据准备"/>
+        <parameter name="TestFilePath" value="/TestList/7.0KJCopyDataPrepare.xlsx"/>
+        <parameter name="PlatformName" value="准备项目-数据准备"/>
         <parameter name="TIME" value="2"/>
         <parameter name="IfDataPrepare" value="是"/>
-        <parameter name="TestName" value="7.0ZJKSZB.xlsx"/>
+        <parameter name="TestName" value="7.0KJCopyDataPrepare.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
         </classes>

@@ -4,10 +4,10 @@
            failures="0"
            errors="0"
            skipped="0"
-           time="1.296">
+           time="2.921">
   <properties />
   
   
-            <testcase name="interfacetest" time="1.296" classname="Testing.InterfaceTest" />
+            <testcase name="interfacetest" time="2.921" classname="Testing.InterfaceTest" />
       
 </testsuite>

@@ -14,19 +14,21 @@ public class StringSubByContent {
      */
     public static String SubByContentLBorRB(String buffer,String LB,String RB,int skip) throws IOException {
         String context = "";
-        if(skip==1)
+        try {
+            if (skip == 1) {
+                context = buffer.substring(0, buffer.indexOf(LB));
+                context = buffer.substring(context.length() + LB.length(), buffer.length());
+                context = context.substring(0, context.indexOf(RB));
+                System.out.println("截取获得值RB:" + context + "\n");
+            } else {
+                context = buffer;
+                System.out.println("请求返回值 跳过:" + context + "\n");
+            }
+            return context;
+        }catch (Exception e)
         {
-            context=buffer.substring(0,buffer.indexOf(LB));
-            context=buffer.substring(context.length()+LB.length(),buffer.length());
-            context=context.substring(0,context.indexOf(RB));
-            System.out.println("截取获得值RB:"+context+"\n");
+            return "";
         }
-        else
-        {
-            context=buffer;
-            System.out.println("请求返回值 跳过:"+context+"\n");
-        }
-        return context;
     }
     public static String ReplaceByContentLBorRB(String buffer,String LB,String RB,String needcontext,int skip) throws IOException {
         String Replacecontext = "";

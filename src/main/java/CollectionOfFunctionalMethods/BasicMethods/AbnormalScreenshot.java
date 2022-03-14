@@ -1,5 +1,6 @@
 package CollectionOfFunctionalMethods.BasicMethods;
 import macaca.client.MacacaClient;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 
 /**
@@ -13,8 +14,10 @@ public class AbnormalScreenshot {
     private   String AbnormalXpathDetail="//*[@ng-click=\"msg.showMeItem=!msg.showMeItem\"]";
     public static final String AbnormalXpathDetailGetText="//*[@class=\"message-content ng-binding ng-scope\"]";//获取详细内容
     public    String AbnormalDetailContent=null;
+    JiraPicturesPath Jira=new JiraPicturesPath();
     public int WhetherCatchAbnormal(MacacaClient Driver,String img) throws Exception {
         int frequency=1;//查找次数
+        String AbnormalclassPath="";
         try{
             if (Driver.waitForElementByXPath(AbnormalXpath)==null)
             {
@@ -44,38 +47,8 @@ public class AbnormalScreenshot {
         System.out.println("AbnormalXpathDetail 的定位："+AbnormalXpathDetail);
         Driver.sleep(1000);
         Driver.saveScreenshot(img);
+        Jira.JiraPicturesSaveAndPath(Driver,img);
         return 1;
     }
-   /* //中文转换成GBK码(16进制字符串)，每个汉字2个字节
-    public String Chinese2GBK(String chineseStr)throws Exception {
-        StringBuffer GBKStr = new StringBuffer();
-        byte[] GBKDecode = chineseStr.getBytes("gbk");
-        for (byte b : GBKDecode)
-            GBKStr.append(Integer.toHexString(b&0xFF));
-        return GBKStr.toString().toUpperCase();
-    }
-    public  String ChinesetoGBK(String source) throws UnsupportedEncodingException {
-        StringBuilder sb = new StringBuilder();
-        byte[] bytes = source.getBytes("GBK");
-        for(byte b : bytes) {
-            sb.append("%" + Integer.toHexString((b & 0xff)).toUpperCase());
-        }
-        return sb.toString();
-    }*/
-    /**
-     * gbk与utf-8互转
-     * 利用BASE64Encoder/BASE64Decoder实现互转
-     * @param str
-     * @return
-     */
-    /*private String charsetConvert(String str, String charset) {
-        try {
-            str = new sun.misc.BASE64Encoder().encode(str.getBytes(charset));
-            byte[] bytes = new sun.misc.BASE64Decoder().decodeBuffer(str);
-            str = new String(bytes, charset);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-        return str;
-    }*/
+
 }

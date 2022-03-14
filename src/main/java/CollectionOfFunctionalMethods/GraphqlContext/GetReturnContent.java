@@ -23,10 +23,6 @@ public class GetReturnContent {
         for(int num=1;num<strKeyValueSub.length;num+=3)
         {
             NeedContext=StringSubByContent.SubByContentLBorRB(ReturnInterface,strKeyValueSub[num+1].trim(),strKeyValueSub[num+2].trim(),1);
-            if(strKeyValueSub[num].contains( "encodeurl" ))
-              {
-                  NeedContext= URLEncoder.encode(NeedContext,"utf-8");
-               }
             map.put( strKeyValueSub[num], ""+NeedContext+"");
         }
         return  map;

@@ -61,7 +61,7 @@
             <class name="Testing.Tester"/>
         </classes>
     </test>-->
-	    <test name="安徽专技开通统计">
+	<test name="安徽专技开通统计">
        <parameter name="TestFilePath" value="/TestList/7.0AHZJ-ClassOpenStatistics.xlsx "/>
         <parameter name="PlatformName" value="报表用例-安徽专技开通统计"/>
        <parameter name="TIME" value="30"/>
@@ -124,7 +124,7 @@
     <test name="甘肃专技培训班开通统计">
         <parameter name="TestFilePath" value="/TestList/7.0GSZJ-ClassOpenStatistics.xlsx"/>
         <parameter name="PlatformName" value="报表用例-甘肃专技培训班开通统计"/>
-        <parameter name="TIME" value="30"/>
+        <parameter name="TIME" value="10"/>
         <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="7.0GSZJ-ClassOpenStatistics.xlsx"/>
         <classes>
@@ -134,9 +134,29 @@
     <test name="甘肃专技班级学习统计">
         <parameter name="TestFilePath" value="/TestList/7.0GSZJ-LearningStatistics.xlsx"/>
         <parameter name="PlatformName" value="报表用例-甘肃专技班级学习统计"/>
-        <parameter name="TIME" value="30"/>
+        <parameter name="TIME" value="10"/>
         <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="7.0GSZJ-LearningStatistics.xlsx"/>
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>
+    <test name="福建专技开通统计">
+        <parameter name="TestFilePath" value="/TestList/7.0FJZJ-ClassOpenStatistics.xlsx"/>
+        <parameter name="PlatformName" value="报表用例-福建专技开通统计"/>
+        <parameter name="TIME" value="20"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="7.0FJZJ-ClassOpenStatistics.xlsx"/>
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>
+    <test name="福建省工考开通统计">
+        <parameter name="TestFilePath" value="/TestList/6.0SGK-ClassOpenStatistics.xlsx"/>
+        <parameter name="PlatformName" value="报表用例-福建省工考开通统计"/>
+        <parameter name="TIME" value="20"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="6.0SGK-ClassOpenStatistics.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
         </classes>
@@ -145,7 +165,7 @@
     <test name="福建建设开通统计">
         <parameter name="TestFilePath" value="/TestList/7.0FJJS-ClassOpenStatistics.xlsx"/>
         <parameter name="PlatformName" value="报表用例-福建建设开通统计"/>
-        <parameter name="TIME" value="30"/>
+        <parameter name="TIME" value="20"/>
         <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="7.0FJJS-ClassOpenStatistics.xlsx"/>
         <classes>
@@ -155,14 +175,14 @@
     <test name="福建建设学习统计">
         <parameter name="TestFilePath" value="/TestList/7.0FJJS-LearningStatistics.xlsx"/>
         <parameter name="PlatformName" value="报表用例-福建建设学习统计"/>
-        <parameter name="TIME" value="30"/>
+        <parameter name="TIME" value="20"/>
         <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="7.0FJJS-LearningStatistics.xlsx"/>
         <classes>
             <class name="Testing.Tester"/>
         </classes>
     </test>
-    <test name="教育学院班级开通统计">
+<!--    <test name="教育学院班级开通统计">
     <parameter name="TestFilePath" value="/TestList/7.0JYXY-ClassOpenStatistics.xlsx"/>
     <parameter name="PlatformName" value="报表用例-教育学院班级开通统计"/>
     <parameter name="TIME" value="20"/>
@@ -181,11 +201,11 @@
         <classes>
             <class name="Testing.Tester"/>
         </classes>
-    </test>
-	 <test name="福建省会计资格统计">
+    </test> -->
+	<test name="福建省会计资格统计">
         <parameter name="TestFilePath" value="/TestList/7.0FJSKJ-SalesQualification.xlsx"/>
       <parameter name="PlatformName" value="报表用例-福建省会计资格统计"/>
-        <parameter name="TIME" value="20"/>
+        <parameter name="TIME" value="4"/>
          <parameter name="IfDataPrepare" value="否"/>
          <parameter name="TestName" value="7.0FJSKJ-SalesQualification.xlsx"/>
         <classes>
@@ -195,7 +215,7 @@
     <test name="福建省会计商品统计">
         <parameter name="TestFilePath" value="/TestList/7.0FJSKJ-CommoditySales.xlsx"/>
         <parameter name="PlatformName" value="报表用例-福建省会计商品统计"/>
-        <parameter name="TIME" value="20"/>
+        <parameter name="TIME" value="4"/>
         <parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="7.0FJSKJ-CommoditySales.xlsx"/>
         <classes>
@@ -232,7 +252,17 @@
             <class name="Testing.Tester"/>
         </classes>
     </test>
-    <test name="重庆会计选课统计">
+    <test name="8.0审计报表">
+        <parameter name="TestFilePath" value="/TestList/8.0SJBB.xlsx"/>
+        <parameter name="PlatformName" value="报表用例-审计报表"/>
+        <parameter name="TIME" value="4"/>
+        <parameter name="IfDataPrepare" value="否"/>
+        <parameter name="TestName" value="8.0SJBB.xlsx"/>
+        <classes>
+            <class name="Testing.Tester"/>
+        </classes>
+    </test>
+<!--     <test name="重庆会计选课统计">
         <parameter name="TestFilePath" value="/TestList/7.0CQKJ-ChooseCourseStatistic.xlsx"/>
         <parameter name="PlatformName" value="报表用例-重庆会计选课统计"/>
         <parameter name="TIME" value="4"/>
@@ -241,5 +271,5 @@
         <classes>
             <class name="Testing.Tester"/>
         </classes>
-    </test>
+    </test> -->
 </suite>

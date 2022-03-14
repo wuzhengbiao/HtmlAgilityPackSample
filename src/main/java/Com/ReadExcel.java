@@ -1,33 +1,28 @@
 package Com;
 
-//import com.sun.org.apache.xerces.internal.xs.XSFacet;
-//import junit.framework.TestCase;
+import CollectionOfFunctionalMethods.BasicMethods.GetCurrentSystemTime;
 import CollectionOfFunctionalMethods.BasicMethods.GetLocalConfig;
 import CollectionOfFunctionalMethods.BasicMethods.GetRandom;
+import CollectionOfFunctionalMethods.BasicMethods.InterceptFixedLength;
+import CollectionOfFunctionalMethods.DatabaseRelatedMethods.DataBase;
+import CollectionOfFunctionalMethods.DomainNameBasicConfiguration.UrlBasicConfigtions;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-//import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-//import org.apache.poi.sl.usermodel.Sheet;
-//import org.apache.poi.ss.usermodel.Workbook;
-//import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.testng.Assert;
-
-//import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 
 /**
@@ -35,6 +30,9 @@ import java.util.ArrayList;
  * 本类都是对.xlsx的操作
  */
 public class ReadExcel {
+    public  static String Jirafilepath="";
+    DataBase ExcelData=new DataBase();
+    List<String> title = new ArrayList<String>();
     /**
      * read the Excel file
      * @param path the path of the Excel file
@@ -66,7 +64,7 @@ public class ReadExcel {
      * @return
      * @throws IOException
      */
-    public List<TestingCase> readXlsxDataPrepare(String path) throws IOException {
+    public List<TestingCase> readXlsxDataPrepare(String path) throws IOException, SQLException {
         InputStream is = new FileInputStream(path);
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
         TestingCase testingCase = null;
@@ -75,6 +73,7 @@ public class ReadExcel {
         GetLocalConfig Config=new GetLocalConfig();
         String Prepareconfig = Config.ReadConfigFile("PlatformBasicInformation.txt");
         PrepareContext = Config.GetBySemicolonFromConfigFile(Prepareconfig);
+
         // Read the Sheet
         for (int numSheet = 0; numSheet < xssfWorkbook.getNumberOfSheets(); numSheet++) {
             XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(numSheet);
@@ -83,6 +82,7 @@ public class ReadExcel {
             }
             for(int prepareNum=0;prepareNum<PrepareContext.length;prepareNum++)
             {
+                String getAppAuthentor="";
                 for (int rowNum = 1; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
                     XSSFRow xssfRow = xssfSheet.getRow(rowNum);
                     String FirstValue = getValue(xssfRow.getCell(0));
@@ -108,26 +108,57 @@ public class ReadExcel {
                             testingCase.setModel(getValue(model));
                             testingCase.setMode(getValue(mode));
                             if (getValue(modepath).contains("Domain")) {
-                                testingCase.setModePath(getValue(modepath).replace("Domain", PrepareContext[prepareNum].trim()));
+                                getAppAuthentor=getValue(modepath).replace("Domain", PrepareContext[prepareNum].trim());
                             } /*else if (getValue(modepath).contains("xxx")) {
                                 testingCase.setModePath(getValue(modepath).replace("xxx", PrepareContext[PrepareContext.length / 2 + prepareNum]));
                             } */else {
-                                testingCase.setModePath(getValue(modepath));
+                                getAppAuthentor=getValue(modepath);
                             }
+                            testingCase.setModePath(getAppAuthentor);
                             if(getValue(text).contains("Random"))
                             {
                                 testingCase.setText(ReturnForm.replace("Random", GetRandom.ReturnGetRandomChar(3)));
+                                if(getValue(text).contains("MysqlRandom"))
+                                {
+                                    title=ExcelData.QueryDatabaseSql("SELECT content_body_st  from collec_informations_basic WHERE info_warehousing_time>=CURDATE() and  content_type_int='2'");
+                                    if(title.size()==0)
+                                    {
+                                        title=ExcelData.QueryDatabaseSql("SELECT PLATFORM_EXCEPTION_INFORMATIN from platform_exception_informatin_table WHERE CREATEIME>=CURDATE() and PLATFORM_EXCEPTION_TYPE='2'");
+                                    }
+                                    System.out.println("title" +title);
+                                    testingCase.setText(InterceptFixedLength.CutString(title+""));
+                                }
                             }
                             else if(getValue(text).contains("Domain"))
                             {
-                                testingCase.setText(ReturnForm.replace("Domain",PrepareContext[prepareNum]));
+                                testingCase.setText(ReturnForm.replace("Domain",PrepareContext[prepareNum].trim()));
+                            }
+                            else if(getValue(text).contains("Date"))
+                            {
+                                testingCase.setText(ReturnForm.replace("Date", GetCurrentSystemTime.GetCurrentTime()));
+                                if(getValue(text).contains("MysqlDate"))
+                                {
+                                    title=ExcelData.QueryDatabaseSql("SELECT info_platform_name  from collec_informations_basic WHERE info_warehousing_time>=CURDATE() and  content_type_int='2'");
+                                    System.out.println("title" +title);
+                                    if(title.size()==0)
+                                    {
+                                        title=ExcelData.QueryDatabaseSql("SELECT PLATFORM_NAME from platform_exception_informatin_table WHERE CREATEIME>=CURDATE() and PLATFORM_EXCEPTION_TYPE='2'");
+                                    }
+                                    testingCase.setText(title+GetCurrentSystemTime.GetCurrentTime());
+                                }
+                            }
+                            else if(getValue(text).contains("JiraPath"))
+                            {
+                                Jirafilepath= StringUtils.substringBefore(this.getClass().getResource("").getPath(),"/target")+"\\"+getValue(text).split("/")[1];
+                                System.out.println("路径："+Jirafilepath);
+                                testingCase.setText(ReturnForm.replace(getValue(text),java.net.URLDecoder.decode(Jirafilepath,"utf-8")));
                             }
                             else {
                                 testingCase.setText(ReturnForm);
                             }
-                           // testingCase.setText(ReturnForm+ GetRandom.ReturnGetRandomChar(3));
                             try {
-                                testingCase.setAppAuthentication(getValue(AppAuthentication));
+                                testingCase.setAppAuthentication(UrlBasicConfigtions.GetUrlAppAuthentication(PrepareContext[prepareNum].trim()));
+                         //       System.out.println("AppAuthentication=  "+UrlBasicConfigtions.GetUrlAppAuthentication(PrepareContext[prepareNum].trim()));
                             } catch (Exception e) {
                                 testingCase.setAppAuthentication("空");
                             }
@@ -204,12 +235,12 @@ public class ReadExcel {
                         XSSFCell ContextInterfaceReturn = xssfRow.getCell( 8 );
                         XSSFCell CommonVariable = xssfRow.getCell( 9 );
                         XSSFCell whereskip = xssfRow.getCell( 10 );
-                        String ReturnForm = ProcessingExcelDataTypes( text, getValue( text ) );//调用数据处理方法
-                        testingCase.setId( getValue( no ) );
-                        testingCase.setDescription( getValue( description ) );
-                        testingCase.setModel( getValue( model ) );
-                        testingCase.setMode( getValue( mode ) );
-                        testingCase.setModePath(getValue(modepath));
+                        String ReturnForm = ProcessingExcelDataTypes( text, getValue( text ).trim() );//调用数据处理方法
+                        testingCase.setId( getValue( no ).trim() );
+                        testingCase.setDescription( getValue( description ).trim() );
+                        testingCase.setModel( getValue( model ).trim() );
+                        testingCase.setMode( getValue( mode ).trim() );
+                        testingCase.setModePath(getValue(modepath).trim());
                         testingCase.setText( ReturnForm );
                         try {
                             testingCase.setAppAuthentication( getValue( AppAuthentication ) );
@@ -343,7 +374,7 @@ public class ReadExcel {
     }
 
     @SuppressWarnings("static-access")
-    private String getValue(XSSFCell xssfRow) {
+    public String getValue(XSSFCell xssfRow) {
         if (xssfRow.getCellType() == xssfRow.CELL_TYPE_BOOLEAN) {
             return String.valueOf(xssfRow.getBooleanCellValue());
         } else if (xssfRow.getCellType() == xssfRow.CELL_TYPE_NUMERIC) {

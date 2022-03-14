@@ -17,7 +17,7 @@
             <class name="Testing.Tester"/>
         </classes>
     </test>
-    <test name="安徽专技学员学习">
+    <!--<test name="安徽专技学员学习">
         <parameter name="TestFilePath" value="/TestList/7.0AHZJSZstudy.xlsx"/>
         <parameter name="PlatformName" value="核心用例-7.0安徽专技学员学习"/>
         <parameter name="TIME" value="2"/>
@@ -26,7 +26,7 @@
         <classes>
             <class name="Testing.Tester"/>
         </classes>
-   </test>
+   </test>-->
        <!-- <test name="安徽建设学员学习">-->
         <!--<parameter name="TestFilePath" value="/TestList/7.0AHJSstudy.xlsx"/>-->
         <!--<parameter name="PlatformName" value="核心用例-7.0安徽建设学员学习"/>-->
@@ -46,17 +46,6 @@
             <class name="Testing.Tester"/>
         </classes>
     </test>
-    <test name="福建会计学员学习">
-        <parameter name="TestFilePath" value="/TestList/fjkj200507.xlsx"/>
-        <parameter name="PlatformName" value="核心用例-7.0福建会计学员学习"/>
-        <parameter name="TIME" value="2"/>
-        <parameter name="IfDataPrepare" value="否"/>
-        <parameter name="TestName" value="fjkj200507.xlsx"/>
-        <classes>
-            <class name="Testing.Tester"/>
-        </classes>
-    </test>
-	
 	<test name="湖北会计学员学习">
 		<parameter name="TestFilePath" value="/TestList/7.01HBKJ-Study.xlsx"/>
         <parameter name="PlatformName" value="核心用例-7.0湖北会计学员学习"/>
@@ -68,7 +57,7 @@
         </classes>
     </test>
 
-    <test name="原马尾-测绘项目学员报名">
+   <!--  <test name="原马尾-测绘项目学员报名">
     <parameter name="TestFilePath" value="/TestList/buyclass-student.xlsx"/>
     <parameter name="PlatformName" value="核心用例-测绘项目学员报名"/>
     <parameter name="TIME" value="2"/>
@@ -87,7 +76,7 @@
         <classes>
             <class name="Testing.Tester"/>
         </classes>
-    </test>
+    </test>-->
 
     <test name="华为云视频播放检测">
         <parameter name="TestFilePath" value="/TestList/GSZJ.xlsx"/>
@@ -143,7 +132,7 @@
    <test name="建设考前新平台考试">
        <parameter name="TestFilePath" value="/TestList/8.01XJSKQ-Exam.xlsx"/>
        <parameter name="PlatformName" value="核心用例-建设考前新平台考试"/>
-       <parameter name="TIME" value="4"/>
+       <parameter name="TIME" value="6"/>
        <parameter name="IfDataPrepare" value="否"/>
        <parameter name="TestName" value="8.01XJSKQ-Exam.xlsx"/>
    <classes>
@@ -171,6 +160,17 @@
        <class name="Testing.Tester"/>
    </classes>
    </test> -->
+   
+   <test name="甘肃庆阳工勤学习">
+       <parameter name="TestFilePath" value="/TestList/7.0QYGK-Study.xlsx"/>
+       <parameter name="PlatformName" value="核心用例-甘肃庆阳工勤学习"/>
+       <parameter name="TIME" value="3"/>
+       <parameter name="IfDataPrepare" value="否"/>
+       <parameter name="TestName" value="7.0QYGK-Study.xlsx"/>
+   <classes>
+       <class name="Testing.Tester"/>
+   </classes>
+   </test>
    
    <!--<test name="6.0省工考学员学习">-->
     <!--<parameter name="TestFilePath" value="/TestList/SGKstudy.xlsx"/>-->
@@ -204,8 +204,7 @@
     </classes>
   </test-->
 
-  <test name="原马尾-6.0山东平台学员学习">
-        <!--以下是为@test方法中进行赋值20180319yff-->
+  <!--<test name="原马尾-6.0山东平台学员学习">
         <parameter name="TestFilePath" value="/TestList/6.0sdstudy.xlsx"/>
       <parameter name="PlatformName" value="核心用例-6.0山东平台学员学习"/>
       <parameter name="TIME" value="2"/>
@@ -214,7 +213,7 @@
         <classes>
             <class name="Testing.Tester"/>
         </classes>
-    </test>
+    </test>-->
 
 <!-- 会计因为停止学员端学习故此关闭先 -->
    <!-- <test name="会计学习"> -->
@@ -234,7 +233,6 @@
         <parameter name="TIME" value="2"/>
 		<parameter name="IfDataPrepare" value="否"/>
         <parameter name="TestName" value="5.0StudyExam.xlsx"/>
-
         <classes>
             <class name="Testing.Tester"/>
         </classes>

@@ -22,6 +22,8 @@ public class OverrideIReTry implements IRetryAnalyzer {
             }
                 return false;
         }
+        ReTryTimes.maxReTryNum=0;
+        ReTryTimes.initReTryNum=0;
         return false;
     }
 }

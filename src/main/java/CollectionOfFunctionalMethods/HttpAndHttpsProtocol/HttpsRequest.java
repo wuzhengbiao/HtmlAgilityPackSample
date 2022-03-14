@@ -1,6 +1,7 @@
 package CollectionOfFunctionalMethods.HttpAndHttpsProtocol;
 import CollectionOfFunctionalMethods.BasicMethods.EventListenerMonitoring;
 import CollectionOfFunctionalMethods.BasicMethods.StringSubByContent;
+import CollectionOfFunctionalMethods.GraphqlContext.GetReturnContent;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -136,14 +137,6 @@ public class HttpsRequest {
              * 获取响应码
              */
             int statusCode = Getresponse.getStatusLine().getStatusCode();
-        /*    String AppAuthenticationcookie = "";
-            String value = null;
-            Header[] headers = Getresponse.getHeaders("App-Authentication");
-            for (int i = 0; i < headers.length; i++) {//取出所有的cookie值
-                value = headers[i].getValue();
-                System.out.println("第"+i+"次的值为："+value);
-                AppAuthenticationcookie+=value;
-            }*/
             if (SUCCESS_CODE == statusCode||statusCode ==400) {//临时重定向状态码
                 /**
                  * 通过EntityUitls获取返回内容
@@ -234,6 +227,7 @@ public class HttpsRequest {
      * @throws Exception
      */
     public  Object SendGetS(String url,List<NameValuePair> nameValuePairList,String Conten_type) throws IOException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        HttpSStatusFlag="";
         JSONObject jsonObject = null;
         CloseableHttpClient client = null;
         CloseableHttpResponse response = null;
@@ -310,6 +304,7 @@ public class HttpsRequest {
      */
     //请求头为非josn的
     public  Object SendPosts(String url, String json,String AppAuthentication,String Conten_type,String Authorization) throws Exception {
+        HttpSStatusFlag="";
         CloseableHttpClient client = null;
         CloseableHttpResponse response = null;
         try {
@@ -352,8 +347,14 @@ public class HttpsRequest {
                  */
                 String result = EntityUtils.toString( response.getEntity(), "UTF-8" );
                 System.out.print( "POSTS请求结果响应: " + result + "\n" );
+                if(StringSubByContent.SubByContentLBorRB(result,"\"code\":",",",1).equals("200")||StringSubByContent.SubByContentLBorRB(result,"\"code\":",",",1).equals("0")||StringSubByContent.SubByContentLBorRB(result,"\"code\":",",",1).equals("603"))
+                {
                     HttpSStatusFlag="1";//成功标记
-                    return result;
+                }
+                else{
+                    HttpSStatusFlag="0";//失败标记
+                }
+                return result;
             }
             else{
                 System.out.print( "POSTS请求失败！" + "\n" );
@@ -381,6 +382,7 @@ public class HttpsRequest {
      */
     //请求头为非josn的
     public  Object SendPostsSevenVersions(String url, String json,String Conten_type,String Cookie) throws Exception {
+        HttpSStatusFlag="";
         CloseableHttpClient client = null;
         CloseableHttpResponse response = null;
         try {
@@ -421,8 +423,14 @@ public class HttpsRequest {
                  * 通过EntityUitls获取返回内容
                  */
                 String result = EntityUtils.toString( response.getEntity(), "UTF-8" );
-                System.out.print( "POSTS请求结果响应: " + result + "\n" );
-                HttpSStatusFlag="1";//成功标记
+                System.out.print( "POSTS请求结果响应: " + StringSubByContent.SubByContentLBorRB(result,"\"code\":","\"",1) + "\n" );
+                if(StringSubByContent.SubByContentLBorRB(result,"\"code\":",",",1).equals("200")||StringSubByContent.SubByContentLBorRB(result,"\"code\":",",",1).equals("0")||StringSubByContent.SubByContentLBorRB(result,"\"code\":",",",1).equals("603"))
+                {
+                    HttpSStatusFlag="1";//成功标记
+                }
+                else{
+                    HttpSStatusFlag="0";//失败标记
+                }
                 return result;
             }
             else{
