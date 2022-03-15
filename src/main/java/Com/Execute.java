@@ -363,7 +363,6 @@ public class Execute {
         }
         else if(Testingcase.getModel().equals("入库"))
         {
-            String insertsql="";
             try {
                 for(int num=0;num<=JiraValue.size();num=num+Integer.parseInt(Testingcase.getText()))
                 {
